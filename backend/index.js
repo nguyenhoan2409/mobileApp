@@ -1,28 +1,3 @@
-// // Using Node.js `require()`
-// //import mongoose from 'mongoose';
-// const mongoose = require('mongoose');
-
-// // Using ES6 imports
-
-
-// // async function connect() {
-// //     try {
-// //         await mongoose.connect('mongodb://localhost:27017/Furniture', {
-// //             useNewUrlParser: true,
-// //             useUnifiedTopology : true
-// //         });
-// //         console.log( ' Connect successfully!!');
-// //     }
-// //     catch (error) {
-// //         console.log( ' Connect failure!!');
-// //     }
-// // }
-
-// mongoose.connect('mongodb://localhost:27017/Furniture', () => {
-//     console.log(' Connect successfully!!');
-// })
- 
-
 const express = require("express");
 //const cors = require("cors");
 const app = express();
@@ -30,14 +5,18 @@ const mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 const morgan = require("morgan");
 //const helmet = require("helmet");
-const dotenv = require("dotenv");
+require('dotenv').config();
 const userController = require("./controller/userController");
-const userRouter = require("./router/userRouter")
-const productRouter = require("./router/productRouter")
+const userRouter = require("./router/userRouter");
+const productRouter = require("./router/productRouter");
+const cartRouter = require("./router/cartRouter");
+const cloudinary = require('cloudinary').v2;
 
 
 // Kết nối đến cơ sở dữ liệu MongoDB
-mongoose.connect('mongodb://localhost:27017/Furniture', {
+// dotenv.config();
+
+mongoose.connect(process.env.DB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -48,20 +27,41 @@ mongoose.connect('mongodb://localhost:27017/Furniture', {
     console.error('Lỗi kết nối:', error);
   });
 
-  // setup
+// config cloudinary
+cloudinary.config({
+cloud_name: process.env.CLOUDINARY_NAME,
+api_key: process.env.CLOUDINARY_API_KEY,
+api_secret: process.env.CLOUDINARY_API_SECRET,
+})
 
+
+// test upload image
+// async function uploadImage() {
+//   try {
+//     const result = await cloudinary.uploader.upload('/Users/nguyenthihoanglan/Downloads/image.jpg');
+//     console.log(result);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
+// uploadImage();
+
+  // setup
 app.use(bodyParser.json({limit:"50mb"}));
 //app.use(cors());
 app.use(morgan("common"));
 
+
+
 //router
-
 app.use("/admin", userRouter );
-
 app.use("/seller/product",productRouter);
-// server running
+app.use("/cart", cartRouter);
 
-app.listen( 8080, () => {
+
+
+// server running
+app.listen(process.env.PORT , () => {
   console.log("Server is running...");
 });
 
