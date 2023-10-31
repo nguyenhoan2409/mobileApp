@@ -1,0 +1,14 @@
+[{
+  "_id": {
+    "$oid": "653c70387cb16a94c51b2843"
+  },
+  "name": "Table",
+  "description": "large, suitable for 4-6 people"
+},
+{
+  "_id": {
+    "$oid": "653c70677cb16a94c51b2845"
+  },
+  "name": "Chair",
+  "description": "soft and large, cheap"
+}]
