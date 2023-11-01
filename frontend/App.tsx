@@ -30,6 +30,8 @@ import BottomTabNavigation from './navigation/BottomTabNavigation';
 import ProductDetail from './screens/ProductDetail';
 import ProductCateList from './screens/ProductCateList';
 import BottomTabNavigationSeller from './navigation/BottomTabNavSeller';
+import RecommendedProducts from './screens/RecommendedProducts';
+import SeenProducts from './screens/SeenProducts';
 
 const Stack = createNativeStackNavigator();
 var userType = "buyer";
@@ -52,6 +54,16 @@ function App(): JSX.Element {
           <Stack.Screen
           name="ProductDetail"
           component={ProductDetail}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+        name="RecommendedProducts"
+        component={RecommendedProducts}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+          name="SeenProducts"
+          component={SeenProducts}
           options={{headerShown: false}}
         />
         
