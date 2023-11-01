@@ -1,0 +1,88 @@
+[{
+  "_id": {
+    "$oid": "653905c9d1050eb9996b7c34"
+  },
+  "name": "Chair",
+  "description": "soft, comfortable and large",
+  "originalPrice": 3000,
+  "discountPrice": 2600,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "653905f7d1050eb9996b7c36"
+  },
+  "name": "Table",
+  "description": "suitable 4-6 people large",
+  "originalPrice": 3500,
+  "discountPrice": 2900,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "653c72c2de0e85afb750144c"
+  },
+  "name": "Table",
+  "description": "suitable 4-6 people large",
+  "originalPrice": 3500,
+  "discountPrice": 2900,
+  "category_id": {
+    "$oid": "653c70387cb16a94c51b2843"
+  },
+  "quantity": 30,
+  "images": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "653c7e65d857101b4cbd8500"
+  },
+  "name": "Table Wooden",
+  "description": "suitable 7-9 people large",
+  "originalPrice": 3900,
+  "discountPrice": 3400,
+  "category_id": {
+    "$oid": "653c70387cb16a94c51b2843"
+  },
+  "quantity": 50,
+  "images": [
+    {
+      "public_id": "products/hezr2iobe3eqlfur6c75",
+      "url": "https://res.cloudinary.com/dzahzhy9f/image/upload/v1698463332/products/hezr2iobe3eqlfur6c75.jpg",
+      "_id": {
+        "$oid": "653c7e65d857101b4cbd8501"
+      }
+    }
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "653c821bd857101b4cbd8504"
+  },
+  "name": "Table Wooden 2",
+  "description": "suitable 6-8 people large",
+  "originalPrice": 3800,
+  "discountPrice": 2400,
+  "category_id": {
+    "$oid": "653c70387cb16a94c51b2843"
+  },
+  "quantity": 50,
+  "images": [
+    {
+      "public_id": "products/mgkbjyymv1itt99vsn0h",
+      "url": "https://res.cloudinary.com/dzahzhy9f/image/upload/v1698464280/products/mgkbjyymv1itt99vsn0h.jpg",
+      "_id": {
+        "$oid": "653c821bd857101b4cbd8505"
+      }
+    },
+    {
+      "public_id": "products/nwlu1bhzok5dnztsvvwz",
+      "url": "https://res.cloudinary.com/dzahzhy9f/image/upload/v1698464283/products/nwlu1bhzok5dnztsvvwz.jpg",
+      "_id": {
+        "$oid": "653c821bd857101b4cbd8506"
+      }
+    }
+  ],
+  "__v": 0
+}]
