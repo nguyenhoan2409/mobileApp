@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 //const cors = require("cors");
 const app = express();
@@ -5,11 +6,15 @@ const mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 const morgan = require("morgan");
 //const helmet = require("helmet");
-require('dotenv').config();
+const dotenv = require("dotenv");
 const userController = require("./controller/userController");
-const userRouter = require("./router/userRouter");
-const productRouter = require("./router/productRouter");
-const cartRouter = require("./router/cartRouter");
+const userRouter = require("./routes/userRoutes")
+const authRouter = require('./routes/authRoutes');
+const roleRouter = require("./routes/roleRoutes");
+const categoryRouter = require('./routes/categoryRoutes');
+const shopRouter = require('./routes/shopRoutes');
+const productRouter = require('./routes/productRoutes');
+const cartRouter = require("./routes/cartRouter");
 const cloudinary = require('cloudinary').v2;
 
 
@@ -54,14 +59,17 @@ app.use(morgan("common"));
 
 
 //router
-app.use("/admin", userRouter );
-app.use("/seller/product",productRouter);
+
+app.use('/auth', authRouter);
+app.use('/users', userRouter);
+app.use("/roles", roleRouter);
+app.use('/categories', categoryRouter);
+app.use('/shops', shopRouter);
+app.use('/products', productRouter);
 app.use("/cart", cartRouter);
-
-
-
 // server running
-app.listen(process.env.PORT , () => {
+
+app.listen( process.env.PORT , () => {
   console.log("Server is running...");
 });
 
