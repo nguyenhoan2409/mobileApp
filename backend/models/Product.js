@@ -27,10 +27,18 @@ const productSchema = new mongoose.Schema({
         ref: 'Shop',
         required: true
     },
-    imageUrl: {
-        type: String,
-        required: true
-    },
+    images: [
+        {
+          public_id: {
+            type: String,
+            required: true,
+          },
+          url: {
+            type: String,
+            required: true,
+          },
+        },
+      ],
     quantityInStock: {
         type: Number,
         default: 0

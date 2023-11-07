@@ -71,17 +71,35 @@ const userController = {
 
     updateUser: async (req, res, next) => {
         try {
-            const { id, password, ...updates } = req.body;
-            
-            const updatedUser = await User.findByIdAndUpdate(id, updates, { new: true });
-            
+            const { id, email, password, ...updates } = req.body;
+    
+            const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+            if (email && !emailRegex.test(email)) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid email format.",
+                });
+            }
+    
+            if (email) {
+                const existingUser = await User.findOne({ email: email }).lean();
+                if (existingUser && existingUser._id.toString() !== id) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Email already exists.",
+                    });
+                }
+            }
+    
+            const updatedUser = await User.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+    
             if (!updatedUser) {
                 return res.status(404).json({
                     success: false,
                     message: "User not found",
                 });
             }
-            
+    
             res.status(200).json({
                 success: true,
                 message: "User updated successfully!",
@@ -91,14 +109,15 @@ const userController = {
             console.error(error);
             res.status(500).json({
                 success: false,
-                message: "Internal server error",
+                message: error.message || "Internal server error",
             });
         }
     },
+    
 
     getUserById: async (req, res, next) => {
         try {
-            const userId = req.params.id;
+            const userId = req.query;
             const user = await User.findById(userId);
             
             if (!user) {

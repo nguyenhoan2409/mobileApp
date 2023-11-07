@@ -7,7 +7,6 @@ var bodyParser = require("body-parser");
 const morgan = require("morgan");
 //const helmet = require("helmet");
 const dotenv = require("dotenv");
-const userController = require("./controller/userController");
 const userRouter = require("./routes/userRoutes")
 const authRouter = require('./routes/authRoutes');
 const roleRouter = require("./routes/roleRoutes");
@@ -66,7 +65,7 @@ app.use("/roles", roleRouter);
 app.use('/categories', categoryRouter);
 app.use('/shops', shopRouter);
 app.use('/products', productRouter);
-app.use("/cart", cartRouter);
+app.use("/carts", cartRouter);
 // server running
 
 app.listen( process.env.PORT , () => {

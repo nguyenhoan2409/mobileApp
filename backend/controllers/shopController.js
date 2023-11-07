@@ -5,7 +5,7 @@ const shopController = {
 
     getAllShops: async (req, res, next) => {
         try {
-            const shops = await Shop.find({}).populate('ownerId').populate('products');
+            const shops = await Shop.find({}).populate('products');
             res.status(200).json(shops);
         } catch (error) {
             next(error);
@@ -52,8 +52,12 @@ const shopController = {
                 address, 
                 phone
             });
-    
-            await newShop.save();
+
+            const savedShop = await newShop.save();
+
+            owner.shopId = savedShop._id;
+            await owner.save();
+
             res.status(201).json({
                 success: true,
                 message: "Shop created successfully!",
@@ -108,7 +112,6 @@ const shopController = {
             shop.name = name;
             shop.description = description;
             shop.ownerId = ownerId;
-            shop.products = products;
             shop.address = address;
             shop.phone = phone;
     
@@ -134,7 +137,11 @@ const shopController = {
             if (!shop) {
                 return res.status(404).json({ message: "Shop not found" });
             }
+
+            await User.updateMany({ shopId: id }, { $set: { shopId: null } });
+
             await Shop.findByIdAndRemove(id);
+
             res.status(200).json({
                 success: true,
                 message: "Shop deleted successfully!"

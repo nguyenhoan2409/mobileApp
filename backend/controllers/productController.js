@@ -1,6 +1,7 @@
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 const Shop = require('../models/Shop');
+const cloudinary = require("cloudinary").v2;
 
 const productController = {
 
@@ -45,7 +46,7 @@ const productController = {
 
     createProduct: async (req, res, next) => {
         try {
-            const { name, description, originalPrice, discountPrice, categoryId, shopId, imageUrl, quantityInStock  } = req.body;
+            const { name, description, originalPrice, discountPrice, categoryId, shopId, images, quantityInStock } = req.body;
     
             const category = await Category.findOne({ _id: categoryId });
             if (!category) {
@@ -62,12 +63,31 @@ const productController = {
                 return res.status(400).json({ message: "Tên sản phẩm đã tồn tại." });
             }
     
+            let imageLinks = [];
+    
+            for (let i = 0; i < images.length; i++) {
+                const result = await cloudinary.uploader.upload(images[i], {
+                    folder: "products",
+                });
+                imageLinks.push({
+                    public_id: result.public_id,
+                    url: result.secure_url,
+                });
+            }
+    
             const newProduct = new Product({
-                name, description, originalPrice, discountPrice, categoryId, shopId, imageUrl, quantityInStock
+                name,
+                description,
+                originalPrice,
+                discountPrice,
+                categoryId,
+                shopId,
+                images: imageLinks,
+                quantityInStock
             });
     
             await newProduct.save();
-
+    
             shop.products.push(newProduct._id);
             await shop.save();
     
@@ -80,19 +100,18 @@ const productController = {
             next(error);
         }
     },
-
-
+    
     updateProduct: async (req, res, next) => {
         try {
-            const { id, name, description, originalPrice, discountPrice, categoryId, shopId, imageUrl, quantityInStock } = req.body;
+            const { id, name, description, originalPrice, discountPrice, categoryId, shopId, images, quantityInStock } = req.body;
     
             const product = await Product.findById(id);
             if (!product) {
                 return res.status(404).json({ message: "Product not found" });
             }
     
-            const existingProduct = await Product.findOne({ name });
-            if (existingProduct && String(existingProduct._id) !== String(id)) {
+            const existingProduct = await Product.findOne({ name, _id: { $ne: id } });
+            if (existingProduct) {
                 return res.status(400).json({ message: "Tên sản phẩm đã tồn tại." });
             }
     
@@ -112,13 +131,33 @@ const productController = {
                 product.shopId = shopId;
             }
     
+            if (images && images.length > 0) {
+                for (let i = 0; i < product.images.length; i++) {
+                    await cloudinary.uploader.destroy(product.images[i].public_id);
+                }
+    
+                let imageLinks = [];
+                if (typeof images === "string") {
+                    images = [images];
+                }
+        
+                for (let i = 0; i < images.length; i++) {
+                    const result = await cloudinary.uploader.upload(images[i], {
+                        folder: "products",
+                    });
+                    imageLinks.push({
+                        public_id: result.public_id,
+                        url: result.secure_url,
+                    });
+                }
+                product.images = imageLinks;
+            }
+    
             if (name) product.name = name;
             if (description) product.description = description;
             if (originalPrice) product.originalPrice = originalPrice;
             if (discountPrice) product.discountPrice = discountPrice;
-            if (imageUrl) product.imageUrl = imageUrl;
             if (typeof quantityInStock !== 'undefined') product.quantityInStock = quantityInStock;
-
     
             await product.save();
             
@@ -132,15 +171,22 @@ const productController = {
             next(error);
         }
     },
+    
 
     deleteProduct: async (req, res, next) => {
         try {
-            const { id } = req.query;
+            const id = req.query.id || req.params.id;
     
-            const product = await Product.findByIdAndRemove(id);
+            const product = await Product.findById(id);
             if (!product) {
                 return res.status(404).json({ message: "Sản phẩm không tồn tại." });
             }
+    
+            for (let i = 0; i < product.images.length; i++) {
+                const result = await cloudinary.uploader.destroy(product.images[i].public_id);
+            }
+    
+            await Product.findByIdAndDelete(id);
     
             const shop = await Shop.findById(product.shopId);
             if (shop) {
@@ -156,8 +202,7 @@ const productController = {
         } catch (error) {
             next(error);
         }
-    }
-    
+    },
     
 };
 
