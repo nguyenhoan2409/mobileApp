@@ -24,76 +24,65 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import BottomTabNavigation from './app/navigation/BottomTabNavigation';
+import ProductDetail from './app/screens/ProductDetail';
+import ProductCateList from './app/screens/ProductCateList';
+import BottomTabNavigationSeller from './app/navigation/BottomTabNavSeller';
+import RecommendedProducts from './app/screens/RecommendedProducts';
+import SeenProducts from './app/screens/SeenProducts';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+const Stack = createNativeStackNavigator();
+var userType = "buyer";
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+  if (userType == "buyer") {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="BottomTab"
+            component={BottomTabNavigation}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+          name="ProductCateList"
+          component={ProductCateList}
+          options={{headerShown: false}}
+        />
+          <Stack.Screen
+          name="ProductDetail"
+          component={ProductDetail}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+        name="RecommendedProducts"
+        component={RecommendedProducts}
+        options={{headerShown: false}}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+      <Stack.Screen
+          name="SeenProducts"
+          component={SeenProducts}
+          options={{headerShown: false}}
+        />
+        
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  } else {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="BottomTabSeller"
+            component={BottomTabNavigationSeller}
+            options={{headerShown: false}}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
