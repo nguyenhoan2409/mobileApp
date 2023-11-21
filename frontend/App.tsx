@@ -26,12 +26,12 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import BottomTabNavigation from './navigation/BottomTabNavigation';
-import ProductDetail from './screens/ProductDetail';
-import ProductCateList from './screens/ProductCateList';
-import BottomTabNavigationSeller from './navigation/BottomTabNavSeller';
-import RecommendedProducts from './screens/RecommendedProducts';
-import SeenProducts from './screens/SeenProducts';
+import BottomTabNavigation from './app/navigation/BottomTabNavigation';
+import ProductDetail from './app/screens/ProductDetail';
+import ProductCateList from './app/screens/ProductCateList';
+import BottomTabNavigationSeller from './app/navigation/BottomTabNavSeller';
+import RecommendedProducts from './app/screens/RecommendedProducts';
+import SeenProducts from './app/screens/SeenProducts';
 
 const Stack = createNativeStackNavigator();
 var userType = "buyer";
