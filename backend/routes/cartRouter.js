@@ -12,6 +12,7 @@ router.post("/sub-product/", cartController.subProduct);
 
 router.post("/create-order/", cartController.createOrder);
 
+router.get("/quantity", cartController.getTotalProduct);
 
 //export
 module.exports = router; 
