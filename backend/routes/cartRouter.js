@@ -10,6 +10,7 @@ router.post("/delete-product/", cartController.deleteProduct);
 
 router.post("/sub-product/", cartController.subProduct);
 
+router.get("/quantity", cartController.getTotalProduct);
 
 //export
 module.exports = router; 

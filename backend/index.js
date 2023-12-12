@@ -14,6 +14,10 @@ const categoryRouter = require('./routes/categoryRoutes');
 const shopRouter = require('./routes/shopRoutes');
 const productRouter = require('./routes/productRoutes');
 const cartRouter = require("./routes/cartRouter");
+const couponRouter = require('./routes/couponRouter');
+const eventRouter = require('./routes/eventRouter');
+const reviewRouter = require('./routes/reviewRouter');
+
 const cloudinary = require('cloudinary').v2;
 
 
@@ -66,6 +70,10 @@ app.use('/categories', categoryRouter);
 app.use('/shops', shopRouter);
 app.use('/products', productRouter);
 app.use("/carts", cartRouter);
+app.use("/coupon", couponRouter);
+app.use("/event", eventRouter);
+app.use("/review", reviewRouter);
+
 // server running
 
 app.listen( process.env.PORT , () => {
