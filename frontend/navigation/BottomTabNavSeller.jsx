@@ -11,13 +11,10 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeSeller from '../screens/seller/HomeSeller';
-import Orders from '../screens/seller/Orders';
-import Products from '../screens/seller/Products';
-import ProfileSeller from '../screens/seller/ProfileSeller';
 
 const Tab = createBottomTabNavigator();
 const screenOptions = {
-  tabBarShowLabel: true,
+  tabBarShowLabel: false,
   tabBarHideOnKeyboard: true,
   headerShown: false,
   tabbarStyle: {
@@ -34,7 +31,7 @@ const BottomTabNavigationSeller = () => {
     return (
     <Tab.Navigator screenOptions={screenOptions}>
     <Tab.Screen
-      name="Trang chủ"
+      name="Home"
       component={HomeSeller}
       options={{
         tabBarIcon: ({focused}) => {
@@ -45,30 +42,19 @@ const BottomTabNavigationSeller = () => {
         }
       }}></Tab.Screen>
     <Tab.Screen
-      name="Đơn hàng"
-      component={Orders}
+      name="Search"
+      component={Search}
       options={{
         tabBarIcon: ({focused}) => {
-          return <Entypo name={focused ? "text-document-inverted" : "text-document"}
+          return <Ionicons name={focused ? "search" : "search-outline"}
           size = {24}
           color={focused ? "#008E97" : "black"}
           />
         }
       }}></Tab.Screen>
     <Tab.Screen
-      name="Sản phẩm"
-      component={Products}
-      options={{
-        tabBarIcon: ({focused}) => {
-          return <Entypo name={focused ? "list" : "list"}
-          size = {24}
-          color={focused ? "#008E97" : "black"}
-          />
-        }
-      }}></Tab.Screen>
-      <Tab.Screen
-      name="Cá nhân"
-      component={ProfileSeller}
+      name="Profile"
+      component={Profile}
       options={{
         tabBarIcon: ({focused}) => {
           return <FontAwesome name={focused ? "user" : "user-o"}

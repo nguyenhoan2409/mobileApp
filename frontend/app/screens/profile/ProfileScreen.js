@@ -3,7 +3,6 @@ import { View, Text,TextInput, Image, StyleSheet, Touchable } from 'react-native
 import {COLORS, SIZES} from '../../constants';
 import {AntDesign,MaterialCommunityIcons} from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Button from 'project/screens/Button'
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 

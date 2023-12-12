@@ -34,7 +34,7 @@ import {BottomModal, SlideAnimation, ModalContent} from 'react-native-modals';
 //   import AsyncStorage from "@react-native-async-storage/async-storage";
 //   import { UserType } from "../UserContext";
 //   import jwt_decode from "jwt-decode";
-import {COLORS, SIZES} from '../constants'
+import {COLORS, SIZES} from '../constants/index';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 const Home = () => {
@@ -217,16 +217,14 @@ const Home = () => {
               </TouchableOpacity>
             </View>
 
-            <View style={styles.cartBtnWrapper}>
+            <View>
               <TouchableOpacity style={styles.cartBtn}>
                 <AntDesign
                   name="shoppingcart"
-                  size={26}
-                  style={styles.cartIcon}
+                  size={SIZES.xLarge}
+                  color={COLORS.offwhite}
                 />
-                <View style={styles.cartQuantityWrapper}>
-                  <Text style={styles.cartQuantity}>8</Text>
-                </View>
+                <Text style={styles.cartQuantity}>8</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -380,42 +378,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: COLORS.primary,
   },
-  cartIcon: {
-    color: COLORS.black,
-    marginTop: SIZES.xSmall,
-    marginRight: SIZES.medium,
-  },
   cartBtn: {
+    width: 50,
+    height: '100%',
     borderRadius: SIZES.medium,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.white,
-  },
-  cartBtnWrapper: {
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    // backgroundColor: COLORS.black
-    paddingLeft: 5
-  },
-  cartQuantityWrapper: {
-    backgroundColor: COLORS.red,
-    width: 18,
-    height: 18,
-    borderRadius: 18 / 2,
-    alignItems: 'center',
-    position: 'absolute',
-    left: 16,
-    bottom: 16,
+    backgroundColor: COLORS.primary,
   },
   cartQuantity: {
-    // position: 'absolute',
-    // bottom: 28,
-    // right: 6,
-    // fontWeight: 'bold',
-    // color: 'white',
-    // zIndex: 999,
-    color: COLORS.white,
-    fontSize: 12,
+    position: 'absolute',
+    bottom: 28,
+    right: 6,
+    fontWeight: 'bold',
+    color: 'white',
+    zIndex: 999,
   },
   carouselContainer: {
     flex: 1,

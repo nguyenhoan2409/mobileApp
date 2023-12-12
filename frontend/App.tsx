@@ -32,57 +32,65 @@ import ProductCateList from './app/screens/ProductCateList';
 import BottomTabNavigationSeller from './app/navigation/BottomTabNavSeller';
 import RecommendedProducts from './app/screens/RecommendedProducts';
 import SeenProducts from './app/screens/SeenProducts';
+import OrderDetail from './app/screens/OrderDetail';
+import Login from './app/screens/auth/Login';
+import Signup from './app/screens/auth/Signup';
 
 const Stack = createNativeStackNavigator();
-var userType = "buyer";
 
 function App(): JSX.Element {
-  if (userType == "buyer") {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="BottomTab"
-            component={BottomTabNavigation}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="SignUp"
+          component={Signup}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="BottomTabBuyer"
+          component={BottomTabNavigation}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="BottomTabSeller"
+          component={BottomTabNavigationSeller}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
           name="ProductCateList"
           component={ProductCateList}
           options={{headerShown: false}}
         />
-          <Stack.Screen
+        <Stack.Screen
           name="ProductDetail"
           component={ProductDetail}
           options={{headerShown: false}}
         />
         <Stack.Screen
-        name="RecommendedProducts"
-        component={RecommendedProducts}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
+          name="RecommendedProducts"
+          component={RecommendedProducts}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
           name="SeenProducts"
           component={SeenProducts}
           options={{headerShown: false}}
         />
-        
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
-  } else {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="BottomTabSeller"
-            component={BottomTabNavigationSeller}
-            options={{headerShown: false}}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
-  }
+        <Stack.Screen
+          name="OrderDetail"
+          component={OrderDetail}
+          options={{headerShown: false}}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }
 
 const styles = StyleSheet.create({
