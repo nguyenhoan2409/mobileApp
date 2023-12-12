@@ -5,127 +5,167 @@ import {AntDesign,MaterialCommunityIcons} from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
+import {
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+  Image,
+  StyleProp,
+  ViewStyle,
+  Touchable,
+  TouchableOpacity, 
+} from 'react-native';
+
+import {
+  Colors,
+  DebugInstructions,
+  Header,
+  LearnMoreLinks,
+  ReloadInstructions,
+} from 'react-native/Libraries/NewAppScreen';
+import {COLORS, SIZES} from '../MyApp/constans';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const ProfileScreen = () => {
-  const [userLogin,setUserLogin]=useState(true);
+ 
   return (
+   <View style={styles.container}>
+      
+    <StatusBar backgroundColor={COLORS.gray}/>
+
+     <View style={{width:'100%'}}>
+      <Image
+       source={require('../MyApp/screens/space.jpg')} 
+       style={styles.coverImage }
+       resizeMode='cover'
+     />
+   </View>
    
-    <View style={styles.container}>
-     <View style={styles.container}>
-      <StatusBar backgroundColor={COLORS.gray}/>
-
-      <View style={{width:'100%'}}>
-       <Image
-        source={require('./space.jpg')} 
-        style={styles.coverImage}
-        resizeMode='cover'
-      />
-    </View>
-
       <View style={styles.profileContainer}>
       <Image
-        source={require( './profile.jpeg' )} 
-        style={styles.avatar}
+        source={require( '../MyApp/screens/profile.jpeg' )} 
+        style={styles.avatar }
       />
-      <Text 
-      style={styles.name}>{userLogin===true? "Andre":"Please login into account"}
-      </Text>
-
-      {userLogin===false?(
-        <TouchableOpacity onPress={()=>navigation.navigate("Login")}>
-          <View style={styles.loginBTN}>
-          <Text style={styles.menuText}>L O G I N</Text>
-          </View>
-        </TouchableOpacity>
-      ):(
-        <View style={styles.loginBTN}>
+        
+      <View style={styles.loginBtn}>
           <Text style={styles.menuText}>example.com</Text>
         </View>
-      )}
-    
-      {userLogin===false?(
-        <View></View>
-      ):(
+        </View>
         
-      <View style={styles.menuWrapper}>
 
-      <TouchableOpacity onPress={()=>{}}>
-        <View style={styles.menuItem(0.2)}>
-          <MaterialCommunityIcons
-          name="heart-outline"
-          color={COLORS.primary}
-          size={24}
-          />
+
+        <TouchableOpacity onPress={()=>{}}>
+        <View style={styles.menuItem}>
+        
           <Text style={styles.menuText}>Favorites</Text>
         </View>
         </TouchableOpacity>
 
+
         <TouchableOpacity onPress={()=>{}}>
-        <View style={styles.menuItem(0.2)}>
-        <MaterialCommunityIcons
-          name="truck"
-          color={COLORS.primary}
-          size={24}
-          />
+        <View style={styles.menuItem}>
           <Text style={styles.menuText}>Orders</Text>
         </View>
         </TouchableOpacity>
 
+
         <TouchableOpacity onPress={()=>{}}>
-        <View style={styles.menuItem(0.2)}>
-          <MaterialCommunityIcons
-          name="bag-carry-on"
-          color={COLORS.primary}
-          size={24}
-          />
+        <View style={styles.menuItem}>
           <Text style={styles.menuText}>Cart</Text>
         </View>
         </TouchableOpacity>
 
+
         <TouchableOpacity onPress={()=>{}}>
-        <View style={styles.menuItem(0.2)}>
-          <MaterialCommunityIcons
-          name="cached"
-          color={COLORS.primary}
-          size={24}
-          />
+        <View style={styles.menuItem}>
           <Text style={styles.menuText}>Clear Cache</Text>
         </View>
         </TouchableOpacity>
 
+
         <TouchableOpacity onPress={()=>{}}>
-        <View style={styles.menuItem(0.2)}>
-          <AntDesign
-          name="delete"
-            color={COLORS.primary}
-          size={24}
-          />
+        <View style={styles.menuItem}>
           <Text style={styles.menuText}>Delete Account</Text>
         </View>
         </TouchableOpacity>
 
+
         <TouchableOpacity onPress={()=>{}}>
-        <View style={styles.menuItem(0.2)}>
-          <AntDesign
-          name="logout"
-          color={COLORS.primary}
-          size={24}
-          />
-          <Text style={styles.menuText}>Logout</Text>
+        <View style={styles.menuItem}>
+          <Text style={styles.menuText}>Log out</Text>
         </View>
         </TouchableOpacity>
-        </View>
-      )}
-  
 
-        </View>
-      </View>
-    </View>
+         </View>
    
   );
 };
+const styles = StyleSheet.create({
 
+  coverImage: {
+      
+    width: '100%',
+    height: SIZES.height/3,
+    resizeMode:"cover"
+  },
+  container: {
+    flex: 1,
+    backgroundColor:COLORS.lightWhite
+    
+  },
+  profileContainer:{
+    //flex:1,
+    alignItems:"center",
+    marginTop: -40,
+  marginBottom: 20,
+  },
+  avatar: {
+    width: 150,
+    height: 150,
+    borderRadius: 999,
+    marginTop: -90,
+    resizeMode:"cover",
+    borderWidth:2,
+    borderColor:COLORS.primary
+  },
+  name:{
+    fontFamily:"bold",/*bold/*/
+    color:COLORS.primary,
+    marginVertical:5,
+  
+},
+menuText:{
+  fontFamily:"Poppins",//regular
+  color:COLORS.gray,
+  marginLeft:20,
+  fontWeight:'600',
+  fontSize:14,
+  lineHeight:26
+},
+loginBtn:{
+  backgroundColor:COLORS.secondary,
+  padding:1.5,
+  borderWidth:0.4,
+  borderColor:COLORS.primary,
+  borderRadius:SIZES.medium
+},
+menuItem:{
+  borderBottomWidth:1,
+  flexDirection:'row',
+  paddingVertical:13,
+  paddingHorizontal:35,
+  borderColor:COLORS.gray2
+},
+menuWrapper:{
+  //marginTop:SIZES.xLagrge,
+  width:SIZES.width-SIZES.large,
+  backgroundColor:COLORS.lightWhite,
+  borderRadius:12
+},
+});
 
 export default ProfileScreen;
-
-
