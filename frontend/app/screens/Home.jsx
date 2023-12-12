@@ -217,14 +217,16 @@ const Home = () => {
               </TouchableOpacity>
             </View>
 
-            <View>
+            <View style={styles.cartBtnWrapper}>
               <TouchableOpacity style={styles.cartBtn}>
                 <AntDesign
                   name="shoppingcart"
-                  size={SIZES.xLarge}
-                  color={COLORS.offwhite}
+                  size={26}
+                  style={styles.cartIcon}
                 />
-                <Text style={styles.cartQuantity}>8</Text>
+                <View style={styles.cartQuantityWrapper}>
+                  <Text style={styles.cartQuantity}>8</Text>
+                </View>
               </TouchableOpacity>
             </View>
           </View>
@@ -378,21 +380,42 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: COLORS.primary,
   },
+  cartIcon: {
+    color: COLORS.black,
+    marginTop: SIZES.xSmall,
+    marginRight: SIZES.medium,
+  },
   cartBtn: {
-    width: 50,
-    height: '100%',
     borderRadius: SIZES.medium,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.white,
+  },
+  cartBtnWrapper: {
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    // backgroundColor: COLORS.black
+    paddingLeft: 5
+  },
+  cartQuantityWrapper: {
+    backgroundColor: COLORS.red,
+    width: 18,
+    height: 18,
+    borderRadius: 18 / 2,
+    alignItems: 'center',
+    position: 'absolute',
+    left: 16,
+    bottom: 16,
   },
   cartQuantity: {
-    position: 'absolute',
-    bottom: 28,
-    right: 6,
-    fontWeight: 'bold',
-    color: 'white',
-    zIndex: 999,
+    // position: 'absolute',
+    // bottom: 28,
+    // right: 6,
+    // fontWeight: 'bold',
+    // color: 'white',
+    // zIndex: 999,
+    color: COLORS.white,
+    fontSize: 12,
   },
   carouselContainer: {
     flex: 1,
