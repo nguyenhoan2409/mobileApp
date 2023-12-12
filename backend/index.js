@@ -14,6 +14,8 @@ const categoryRouter = require('./routes/categoryRoutes');
 const shopRouter = require('./routes/shopRoutes');
 const productRouter = require('./routes/productRoutes');
 const cartRouter = require("./routes/cartRouter");
+const orderRouter = require('./routes/orderRoutes');
+
 const cloudinary = require('cloudinary').v2;
 
 
@@ -66,6 +68,7 @@ app.use('/categories', categoryRouter);
 app.use('/shops', shopRouter);
 app.use('/products', productRouter);
 app.use("/carts", cartRouter);
+app.use('/orders', orderRouter);
 // server running
 
 app.listen( process.env.PORT , () => {

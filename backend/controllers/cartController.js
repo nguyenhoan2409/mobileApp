@@ -2,6 +2,7 @@ const express = require("express");
 const Product = require("../models/Product");
 const Cart = require("../models/Cart");
 const User = require("../models/User");
+const Order = require("../models/Order");
 
 const cartController = {
   getProduct: async (req, res, next) => {
@@ -169,6 +170,44 @@ const cartController = {
       await cartUser.save();
       res.status(200).json(cartUser);
     } catch (error) {
+      return next(error);
+    }
+  },
+  
+  createOrder: async (req, res, next) => {
+    try {
+      const userId = req.body.userId;
+      const address = req.body.address;
+      const couponId = req.body.couponId; 
+      const status = "pending";
+
+      const cartUser = await Cart.findOne({ user_id: userId });
+      if (!cartUser) {
+        return res.status(404).json({ message: "Cart not found." });
+      }
+
+      let totalAmount = 0;
+      for (const item of cartUser.product) {
+        const product = await Product.findById(item.product_id);
+        if (product) {
+          totalAmount += item.quantity * product.discountPrice; 
+        }
+      }
+
+      const order = new Order({
+        userId,
+        cart: cartUser.product,
+        totalAmount,
+        status,
+        address,
+        couponId,
+      });
+
+      await order.save();
+
+      res.status(201).json(order);
+    } catch (error) {
+      console.log("Error:", error);
       return next(error);
     }
   },

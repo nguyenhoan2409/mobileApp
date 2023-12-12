@@ -10,6 +10,8 @@ router.post("/delete-product/", cartController.deleteProduct);
 
 router.post("/sub-product/", cartController.subProduct);
 
+router.post("/create-order/", cartController.createOrder);
+
 
 //export
 module.exports = router; 
