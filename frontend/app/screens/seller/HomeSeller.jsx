@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import {SIZES} from '../../constants';
-import {COLORS} from '../../../constants';
+import {COLORS} from '../../constants';
 import {useNavigation} from '@react-navigation/native';
 import OrderCardView from '../../components/OrderCardView';
 

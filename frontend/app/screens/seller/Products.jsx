@@ -1,9 +1,9 @@
 import React from 'react';
 import {StyleSheet, View, Text, SafeAreaView, ScrollView, TouchableOpacity, TextInput, FlatList} from 'react-native';
-import { COLORS, SIZES } from '../../../constants';
+import { COLORS, SIZES } from '../../constants';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import ProductCardView from '../../../components/ProductCardView';
+import ProductCardView from '../../components/ProductCardView';
 
 
 

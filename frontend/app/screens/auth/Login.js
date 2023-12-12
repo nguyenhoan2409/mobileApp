@@ -17,13 +17,18 @@ import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
-
+import API from '../../services/GlobalAPI';
+import getToken from '../../services/authService'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
   const navigation = useNavigation();
   const [password, setPassword] = useState('');
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [rightIcon, setRightIcon] = useState('eye');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+
   const handlePasswordVisibility = () => {
     if (rightIcon === 'eye') {
       setRightIcon('eye-off');
@@ -33,6 +38,24 @@ const Login = () => {
       setPasswordVisibility(!passwordVisibility);
     }
   };
+
+  const handleLogin = async () => {
+    const loginData = {
+      username: email,
+      password: password
+    };
+  
+    const response = await API.requestPOST_Login('/auth/login', loginData);
+  
+    if (response && response.token) {
+      AsyncStorage.setItem('userToken', response.token);
+
+      navigation.navigate('BottomTabBuyer');
+    } else {
+      setMessage('Đăng nhập không thành công');
+    }
+  };
+
   return (
     <ScrollView>
       <SafeAreaView style={{marginHorizontal: 20}}>
@@ -52,7 +75,10 @@ const Login = () => {
                   color={COLORS.gray}
                   style={styles.iconStyle}
                 />
-                <TextInput placeholder="Enter email" />
+                <TextInput
+                  placeholder="Enter email"
+                  onChangeText={text => setEmail(text)}
+                />
               </View>
             </View>
 
@@ -87,7 +113,7 @@ const Login = () => {
             </View>
 
             <Pressable
-              onPress={() => navigation.navigate('BottomTabBuyer')}
+              onPress={handleLogin}
               style={{
                 backgroundColor: COLORS.primary,
                 borderRadius: 6,
@@ -103,6 +129,8 @@ const Login = () => {
                 Đăng nhập
               </Text>
             </Pressable>
+
+            {message ? <Text style={styles.errorMessage}>{message}</Text> : null}
 
             <TouchableOpacity
               onPress={() => navigation.navigate('SignUp')}
@@ -187,6 +215,11 @@ const styles = StyleSheet.create({
   },
   eyeIcon: {
     zIndex: 999
+  },
+  errorMessage: {
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 10
   },
 });
 export default Login;

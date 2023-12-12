@@ -5,6 +5,26 @@ const cloudinary = require("cloudinary").v2;
 
 const productController = {
 
+    searchProducts: async (req, res, next) => {
+        try {
+            const { categoryId, name } = req.body;
+
+            let filter = {};
+            if (categoryId) {
+                filter.categoryId = categoryId;
+            }
+            if (name) {
+                filter.name = { $regex: new RegExp(name, 'i') }; // Tìm kiếm không phân biệt hoa thường
+            }
+
+            const products = await Product.find(filter).populate('categoryId');
+
+            res.status(200).json(products);
+        } catch (error) {
+            next(error);
+        }
+    },
+
     getAllProducts: async (req, res, next) => {
         try {
             const products = await Product.find({});

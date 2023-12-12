@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {COLORS, SIZES} from '../../constants';
+import {COLORS, SIZES} from '../constants';
 
 const Search = () => {
   const [searchText, setSearchText] = useState('');

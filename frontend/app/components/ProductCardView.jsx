@@ -5,7 +5,6 @@ import { TouchableOpacity } from 'react-native'
 import  Ionicons  from "react-native-vector-icons/Ionicons"
 import { COLORS, SIZES } from '../constants'
 import { useNavigation } from '@react-navigation/native'
-import ProductDetail from '../screens/ProductDetail'
 
 const ProductCardView = ({ item }) => {
 

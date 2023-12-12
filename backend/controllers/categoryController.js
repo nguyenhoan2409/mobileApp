@@ -3,6 +3,19 @@
 const Category = require('../models/Category');
 
 const categoryController = {
+
+    searchCategoryByName: async (req, res, next) => {
+        try {
+            const { keyWord } = req.body;
+            const regex = new RegExp(keyWord, 'i');
+
+            const categories = await Category.find({ name: regex });
+            
+            res.status(200).json(categories);
+        } catch (error) {
+            next(error);
+        }
+    },
     
     getAllCategories: async (req, res, next) => {
         try {
