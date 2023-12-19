@@ -14,6 +14,8 @@ import {SIZES} from '../../constants';
 import {COLORS} from '../../constants';
 import {useNavigation} from '@react-navigation/native';
 import OrderCardView from '../../components/OrderCardView';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { jwtDecode } from 'jwt-decode';
 
 const HomeSeller = () => {
   const orderList = [
@@ -79,7 +81,7 @@ const HomeSeller = () => {
                 <Text>2000000VNĐ</Text>
               </View>
               <View style={styles.statisValue}>
-                <Text style={styles.statisValueHeader}>Tổng lợi nhuận</Text>
+                <Text style={styles.statisValueHeader}>Tổng sản phẩm bán ra</Text>
                 <Text>2000000VNĐ</Text>
               </View>
             </View>
@@ -172,5 +174,6 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontSize: SIZES.large,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
 });

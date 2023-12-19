@@ -1,10 +1,26 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text , TouchableOpacity} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const Profile = () => {
+    const navigation = useNavigation(); 
+    async function removeItemValue(key) {
+        try {
+            await AsyncStorage.removeItem(key);
+            console.log('token was deleted'); 
+            navigation.navigate('Login');
+        }
+        catch(exception) {
+            console.log(exception)
+        }
+    }
     return (
         <View>
-            <Text>Profile</Text>
+            <TouchableOpacity onPress={() => {removeItemValue('userToken')}}>
+                <Text>Đăng xuất</Text>
+                
+            </TouchableOpacity>
         </View>
     )
 }

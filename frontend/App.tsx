@@ -35,6 +35,7 @@ import SeenProducts from './app/screens/SeenProducts';
 import OrderDetail from './app/screens/OrderDetail';
 import Login from './app/screens/auth/Login';
 import Signup from './app/screens/auth/Signup';
+import FlashMessage from 'react-native-flash-message';
 
 const Stack = createNativeStackNavigator();
 
@@ -43,13 +44,13 @@ function App(): JSX.Element {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name="SignUp"
-          component={Signup}
+          name="Login"
+          component={Login}
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="Login"
-          component={Login}
+          name="SignUp"
+          component={Signup}
           options={{headerShown: false}}
         />
         <Stack.Screen
@@ -89,7 +90,9 @@ function App(): JSX.Element {
           options={{headerShown: false}}
         />
       </Stack.Navigator>
+      <FlashMessage position={"bottom"} />
     </NavigationContainer>
+    
   );
 }
 
