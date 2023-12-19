@@ -50,6 +50,7 @@ const Login = () => {
     const response = await API.requestPOST_Login('/auth/login', loginData);
     if (response && response.token) {
       await AsyncStorage.setItem('userToken', response.token);
+      await AsyncStorage.setItem('userId', response.userId); 
       // async function getItem(item) {
       //   try {
       //     const value = await AsyncStorage.getItem(item);
@@ -60,7 +61,7 @@ const Login = () => {
       //   }
       // }
       // getItem('userToken');
-      if (response.userRoleId == '653a2551a823940702a4b910') {
+      if (response.userRoleId == '653a2551a823940702a4b910' || response.userRoleId == "653a2519a823940702a4b90a") {
         navigation.navigate('BottomTabSeller');
         setUserName('');
         setPassword('');
@@ -72,11 +73,11 @@ const Login = () => {
     } else {
       // setMessage('Email hoặc mật khẩu sai. Vui lòng kiểm tra lại.');
       showMessage({
-        message: "Cảnh báo",
+        message: "Lỗi",
         description: "Email hoặc mật khẩu sai. Vui lòng kiểm tra lại.",
         type: "danger",
         position: 'top', 
-        duration: 6000,
+        duration: 5000,
         icon: props => <AntDesign name='warning' size={22} color={COLORS.white} style={{padding: 10}}{...props} />,
       });
     }

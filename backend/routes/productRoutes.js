@@ -7,6 +7,7 @@ router.get('/all',  productController.getAllProducts);
 router.get('/', productController.getProductById);
 router.post('/create', checkAdminRole, productController.createProduct);
 router.get('/byShop', checkAdminRole, productController.getProductsByShopId);
+router.get('/byCategory', productController.getProductsByCategoryId);
 router.post('/update', checkAdminRole, productController.updateProduct);
 router.post('/delete', checkAdminRole, productController.deleteProduct);
 router.post('/search', productController.searchProducts);

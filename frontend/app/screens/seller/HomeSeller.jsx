@@ -82,17 +82,17 @@ const HomeSeller = () => {
               </View>
               <View style={styles.statisValue}>
                 <Text style={styles.statisValueHeader}>Tổng sản phẩm bán ra</Text>
-                <Text>2000000VNĐ</Text>
+                <Text>3</Text>
               </View>
             </View>
             <View style={styles.statisValueWrapper}>
               <View style={styles.statisValue}>
                 <Text style={styles.statisValueHeader}>Số lượt xem</Text>
-                <Text>2000000VNĐ</Text>
+                <Text>45</Text>
               </View>
               <View style={styles.statisValue}>
                 <Text style={styles.statisValueHeader}>Số lượng đơn hàng</Text>
-                <Text>2000000VNĐ</Text>
+                <Text>4</Text>
               </View>
             </View>
           </View>

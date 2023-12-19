@@ -1,13 +1,14 @@
 import React from 'react';
-import {StyleSheet, Text, FlatList, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, FlatList, View, TouchableOpacity, SafeAreaView} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import {COLORS, SIZES} from '../constants';
 import ProductCardView from '../components/ProductCardView';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { ScrollView } from 'react-native-virtualized-view';
 
 const RecommendedProducts = ({navigation}) => {
   const route = useRoute();
-  const productList = route.params;
+  const recommendedProductList = route.params;
   const numColumns = 2;
   const formatData = (data, numColumns) => {
     const numberOfFullRows = Math.floor(data.length / numColumns);
@@ -25,6 +26,8 @@ const RecommendedProducts = ({navigation}) => {
   };
   return (
     <>
+    <SafeAreaView>
+      <ScrollView>
       <View style={styles.headerContainer}>
         <Ionicons
           name="chevron-back-circle"
@@ -40,17 +43,19 @@ const RecommendedProducts = ({navigation}) => {
       </View>
       <View style={styles.recommendedProductsContainer}>
         <FlatList
-          data={formatData(productList, numColumns)}
+          data={recommendedProductList}
           keyExtractor={item => item._id}
           renderItem={({item, index}) => (
-            <ProductCardView item={item} key={index} />
+            <ProductCardView item={item} key={index._id} />
           )}
           contentContainerStyle={{
             columnGap: SIZES.medium - 5,
             rowGap: SIZES.medium - 5,
           }}
-          numColumns={numColumns}></FlatList>
+          numColumns={numColumns} />
       </View>
+      </ScrollView>
+      </SafeAreaView>
     </>
   );
 };

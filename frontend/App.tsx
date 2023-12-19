@@ -36,6 +36,8 @@ import OrderDetail from './app/screens/OrderDetail';
 import Login from './app/screens/auth/Login';
 import Signup from './app/screens/auth/Signup';
 import FlashMessage from 'react-native-flash-message';
+import Cart from './app/screens/Cart';
+import Paying from './app/screens/Paying';
 
 const Stack = createNativeStackNavigator();
 
@@ -87,6 +89,16 @@ function App(): JSX.Element {
         <Stack.Screen
           name="OrderDetail"
           component={OrderDetail}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Cart"
+          component={Cart}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Pay"
+          component={Paying}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

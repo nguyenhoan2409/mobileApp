@@ -62,6 +62,22 @@ const productController = {
             next(error);
         }
     },
+
+    getProductsByCategoryId: async (req, res, next) => {
+        try {
+            const { categoryId } = req.query;
+    
+            const category = await Category.findOne({ _id: categoryId });
+            if (!category) {
+                return res.status(404).json({ message: "Category không tồn tại." });
+            }
+    
+            const products = await Product.find({ categoryId: categoryId });
+            res.status(200).json(products);
+        } catch (error) {
+            next(error);
+        }
+    },
     
 
     createProduct: async (req, res, next) => {

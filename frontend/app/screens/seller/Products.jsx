@@ -1,48 +1,113 @@
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  Platform,
+  Pressable,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
+import {ScrollView} from 'react-native-virtualized-view';
 import React from 'react';
-import {StyleSheet, View, Text, SafeAreaView, ScrollView, TouchableOpacity, TextInput, FlatList} from 'react-native';
-import { COLORS, SIZES } from '../../constants';
+import {useState, useEffect, useCallback, useContext} from 'react';
+
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import {SliderBox} from 'react-native-image-slider-box';
 import ProductCardView from '../../components/ProductCardView';
 
+import DropDownPicker from 'react-native-dropdown-picker';
+import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import {BottomModal, SlideAnimation, ModalContent} from 'react-native-modals';
 
+import {COLORS, SIZES} from '../../constants';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import API from '../../services/GlobalAPI';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {showMessage} from 'react-native-flash-message';
 
 const Products = () => {
-    const productList = [
-        {
-          title: 'Ghế sofa',
-          supplier: 'ZONO',
-          price: 2000000,
-          imageUrl:
-            'https://th.bing.com/th/id/OIP.WMZMXQ1kgEqFi9Qfv7o3VAHaHa?pid=ImgDet&rs=1',
-          description: 'Ghế sofa',
-        },
-        {
-          title: 'Ghế sofa',
-          supplier: 'ZONO',
-          price: 2000000,
-          imageUrl:
-            'https://th.bing.com/th/id/OIP.WMZMXQ1kgEqFi9Qfv7o3VAHaHa?pid=ImgDet&rs=1',
-          description: 'Ghế sofa',
-        },
-        {
-          title: 'Ghế sofa',
-          supplier: 'ZONO',
-          price: 2000000,
-          imageUrl:
-            'https://th.bing.com/th/id/OIP.WMZMXQ1kgEqFi9Qfv7o3VAHaHa?pid=ImgDet&rs=1',
-          description: 'Ghế sofa',
-        },
-        {
-          title: 'Ghế sofa',
-          supplier: 'ZONO',
-          price: 2000000,
-          imageUrl:
-            'https://th.bing.com/th/id/OIP.WMZMXQ1kgEqFi9Qfv7o3VAHaHa?pid=ImgDet&rs=1',
-          description: 'Ghế sofa',
-        },
-      ];
-     return (
+  const productList = [
+    {
+      title: 'Ghế sofa',
+      supplier: 'ZONO',
+      price: 2000000,
+      imageUrl:
+        'https://th.bing.com/th/id/OIP.WMZMXQ1kgEqFi9Qfv7o3VAHaHa?pid=ImgDet&rs=1',
+      description: 'Ghế sofa',
+    },
+    {
+      title: 'Ghế sofa',
+      supplier: 'ZONO',
+      price: 2000000,
+      imageUrl:
+        'https://th.bing.com/th/id/OIP.WMZMXQ1kgEqFi9Qfv7o3VAHaHa?pid=ImgDet&rs=1',
+      description: 'Ghế sofa',
+    },
+    {
+      title: 'Ghế sofa',
+      supplier: 'ZONO',
+      price: 2000000,
+      imageUrl:
+        'https://th.bing.com/th/id/OIP.WMZMXQ1kgEqFi9Qfv7o3VAHaHa?pid=ImgDet&rs=1',
+      description: 'Ghế sofa',
+    },
+    {
+      title: 'Ghế sofa',
+      supplier: 'ZONO',
+      price: 2000000,
+      imageUrl:
+        'https://th.bing.com/th/id/OIP.WMZMXQ1kgEqFi9Qfv7o3VAHaHa?pid=ImgDet&rs=1',
+      description: 'Ghế sofa',
+    },
+  ];
+  const navigation = useNavigation();
+  const [userToken, setUserToken] = useState('');
+
+  const [recommendedProductList, setRecommendedProductList] = useState([]);
+  useEffect(() => {
+    const getList = async () => {
+      try {
+        const value = await AsyncStorage.getItem('userToken');
+        setUserToken(value);
+        var recommended_product_list = await API.requestGET_SP(
+          `/products/all?token=${value}`,
+        );
+
+        if (recommended_product_list) {
+          setRecommendedProductList(recommended_product_list);
+        } else {
+          showMessage({
+            message: 'Lỗi get sản phẩm đề xuất',
+            description: '',
+            type: 'danger',
+            position: 'top',
+            duration: 2000,
+            icon: props => (
+              <AntDesign
+                name="warning"
+                size={22}
+                color={COLORS.white}
+                style={{padding: 10}}
+                {...props}
+              />
+            ),
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getList();
+  }, []);
+  return (
     <SafeAreaView>
       <ScrollView>
         <View style={styles.searchContainer}>
@@ -52,9 +117,9 @@ const Products = () => {
           <View style={styles.searchWrapper}>
             <TextInput
               value=""
-            //   onPressIn={() => {
-            //     navigation.navigate('Search');
-            //   }}
+              //   onPressIn={() => {
+              //     navigation.navigate('Search');
+              //   }}
               placeholder="Tìm kiếm sản phẩm"
               style={styles.searchInput}
             />
@@ -72,52 +137,58 @@ const Products = () => {
         </View>
 
         <View style={styles.allProductsWrapper}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <Text style={styles.header}>Tất cả sản phẩm</Text>
-              
-              <TouchableOpacity>
-              <Text style={{color: COLORS.gray1, paddingRight: SIZES.small}}>Xem tất cả</Text>
-              </TouchableOpacity>
-            </View>
-            <FlatList
-              data={productList}
-              keyExtractor={item => item._id}
-              maxToRenderPerBatch={3}
-              renderItem={({item, index}) => (
-                <ProductCardView item={item} key={index} />
-              )}
-              horizontal
-              contentContainerStyle={{columnGap: SIZES.medium - 5}}></FlatList>
-          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <Text style={styles.header}>Tất cả sản phẩm</Text>
 
-          <View style={styles.bestSellProductWrapper}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <Text style={styles.header}>Sản phẩm bán chạy</Text>
-              
-              <TouchableOpacity>
-              <Text style={{color: COLORS.gray1, paddingRight: SIZES.small}}>Xem tất cả</Text>
-              </TouchableOpacity>
-            </View>
-            <FlatList
-              data={productList}
-              keyExtractor={item => item._id}
-              maxToRenderPerBatch={3}
-              renderItem={({item, index}) => (
-                <ProductCardView item={item} key={index} />
-              )}
-              horizontal
-              contentContainerStyle={{columnGap: SIZES.medium - 5}}></FlatList>
+            <TouchableOpacity>
+              <Text style={{color: COLORS.gray1, paddingRight: SIZES.small}}>
+                Xem tất cả
+              </Text>
+            </TouchableOpacity>
           </View>
+          <FlatList
+            data={recommendedProductList}
+            keyExtractor={item => item._id}
+            maxToRenderPerBatch={3}
+            renderItem={({item, index}) => (
+              <ProductCardView item={item} key={index} />
+            )}
+            horizontal
+            contentContainerStyle={{columnGap: SIZES.medium - 5}}
+          />
+        </View>
+
+        <View style={styles.bestSellProductWrapper}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <Text style={styles.header}>Sản phẩm bán chạy</Text>
+
+            <TouchableOpacity>
+              <Text style={{color: COLORS.gray1, paddingRight: SIZES.small}}>
+                Xem tất cả
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={recommendedProductList}
+            keyExtractor={item => item._id}
+            maxToRenderPerBatch={3}
+            renderItem={({item, index}) => (
+              <ProductCardView item={item} key={index} />
+            )}
+            horizontal
+            contentContainerStyle={{columnGap: SIZES.medium - 5}}
+          />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -172,6 +243,6 @@ const styles = StyleSheet.create({
   },
   bestSellProductWrapper: {
     paddingLeft: 10,
-    paddingTop: 15, 
-  }
+    paddingTop: 15,
+  },
 });

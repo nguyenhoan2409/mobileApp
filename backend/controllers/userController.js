@@ -226,10 +226,15 @@ const userController = {
                 return res.status(404).json({ message: "User not found" });
             }
 
+            const productDetails = await Product.find({
+                '_id': { $in: user.recentlyViewedProducts }
+            });
+    
             res.status(200).json({
                 success: true,
-                recentlyViewedProducts: user.recentlyViewedProducts || []
+                recentlyViewedProducts: productDetails
             });
+            
         } catch (error) {
             console.error("Error fetching user:", error);
             res.status(500).json({ message: "Internal server error" });
