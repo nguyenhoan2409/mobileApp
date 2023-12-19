@@ -26,11 +26,17 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {BottomModal, SlideAnimation, ModalContent} from 'react-native-modals';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 import {COLORS, SIZES} from '../constants'
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import axios from 'axios';
+
 
 const Home = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+
+
   const list = [
     {
       id: '0',
@@ -116,6 +122,96 @@ const Home = () => {
   ];
   
 
+  const selectImage = () => {
+    const options = {
+      mediaType: 'photo',
+      quality: 1,
+    };
+  
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        if (response.assets && response.assets.length > 0) {
+          const source = { uri: response.assets[0].uri };
+          searchWithImage(source.uri);
+        } else {
+          console.log("No URI returned from Image Picker");
+        }
+      }
+    });
+    
+    
+  };
+
+  const convertImageToBase64 = (uri) => {
+    return new Promise((resolve, reject) => {
+      fetch(uri)
+        .then(response => response.blob())
+        .then(blob => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64data = reader.result;
+            resolve(base64data);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        })
+        .catch(error => {
+          console.error("Error converting image to Base64:", error);
+          reject(error);
+        });
+        
+    });
+  };
+  
+  
+  const searchWithImage = async (imageUri) => {
+    try {
+      const imageBase64 = await convertImageToBase64(imageUri);
+      const base64EncodedImage = imageBase64.split(',')[1]; // Loại bỏ phần "data:image/jpeg;base64,"
+  
+      const body = {
+        requests: [
+          {
+            image: {
+              content: base64EncodedImage
+            },
+            features: [
+              { type: "LABEL_DETECTION" }
+            ],
+            imageContext: {
+              languageHints: ["vi"]
+            }
+          }
+        ]
+      };
+  
+      const apiKey = 'AIzaSyAO49E_lWfOEAcl1i-x_r4nBlaZdeI9IGI';
+      const response = await axios.post(`https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`, body);
+  
+      if (response) {
+        console.log(response)
+      }
+      const labels = response.data.responses[0].labelAnnotations;
+      const firstLabel = labels[0].description;
+      setSearchQuery(firstLabel);
+    } catch (error) {
+      if (error.response) {
+        console.log("Error Data:", error.response.data);
+        console.log("Error Status:", error.response.status);
+        console.log("Error Headers:", error.response.headers);
+      } else if (error.request) {
+        console.log("Error Request:", error.request);
+      } else {
+        console.log("Error Message:", error.message);
+      }
+      console.log("Error Config:", error.config);
+    }
+  };
+  
   const navigation = useNavigation();
   
   return (
@@ -127,18 +223,19 @@ const Home = () => {
               <Feather name="search" size={24} style={styles.searchIcon} />
             </TouchableOpacity>
             <View style={styles.searchWrapper}>
-              <TextInput
-                value=""
-                onPressIn={() => {
-                  navigation.navigate('Search');
-                }}
-                placeholder="Tìm kiếm sản phẩm"
-                style={styles.searchInput}
-              />
+            <TextInput
+              value={searchQuery}
+              onPressIn={() => {
+                navigation.navigate('Search');
+              }}
+              placeholder="Tìm kiếm sản phẩm"
+              style={styles.searchInput}
+              onChangeText={setSearchQuery}
+            />
             </View>
 
             <View>
-              <TouchableOpacity style={styles.searchBtn}>
+              <TouchableOpacity style={styles.searchBtn} onPress={selectImage}>
                 <Ionicons
                   name="camera-outline"
                   size={SIZES.xLarge}
