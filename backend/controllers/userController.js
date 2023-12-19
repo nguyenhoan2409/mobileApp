@@ -1,6 +1,7 @@
 const express = require("express");
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
+const Product = require("../models/Product");
 
 const phoneRegex = /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/;
 
@@ -117,7 +118,7 @@ const userController = {
 
     getUserById: async (req, res, next) => {
         try {
-            const userId = req.query;
+            const userId = req.query.id;
             const user = await User.findById(userId);
             
             if (!user) {
@@ -179,6 +180,59 @@ const userController = {
                 success: false,
                 message: "Internal server error",
             });
+        }
+    },
+
+    addRecentlyViewedProduct: async (req, res, next) => {
+        try {
+            const userId = req.query.id;
+            const { productId } = req.body;
+
+            const user = await User.findById(userId);
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            const product = await Product.findById(productId);
+            if (!product) {
+                return res.status(404).json({ message: "Product not found" });
+            }
+
+            // Kiểm tra và loại bỏ sản phẩm cũ nếu quá 5
+            if (user.recentlyViewedProducts.length >= 5) {
+                user.recentlyViewedProducts.shift();
+            }
+
+            user.recentlyViewedProducts.push(productId);
+            await user.save();
+
+            res.status(200).json({
+                success: true,
+                message: "Recently viewed product added successfully",
+                data: user.recentlyViewedProducts
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    getRecentlyViewedProducts: async (req, res, next) => {
+        try {
+            const userId = req.query.id;
+
+            const user = await User.findById(userId);
+
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            res.status(200).json({
+                success: true,
+                recentlyViewedProducts: user.recentlyViewedProducts || []
+            });
+        } catch (error) {
+            console.error("Error fetching user:", error);
+            res.status(500).json({ message: "Internal server error" });
         }
     },
 }
