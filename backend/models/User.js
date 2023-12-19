@@ -22,7 +22,6 @@ const userSchema = new mongoose.Schema({
         unique: true,
         validate: {
             validator: function(v) {
-                // Simple email regex pattern for validation
                 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
                 return emailRegex.test(v);
             },
@@ -68,6 +67,10 @@ const userSchema = new mongoose.Schema({
             required: true,
         },
     },
+    recentlyViewedProducts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+    }],
     createdAt: {
         type: Date,
         default: Date.now(),

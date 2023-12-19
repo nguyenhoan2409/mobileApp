@@ -10,9 +10,11 @@ router.post("/delete-product/", cartController.deleteProduct);
 
 router.post("/sub-product/", cartController.subProduct);
 
-router.post("/create-order/", cartController.createOrder);
+router.post("/create-order", cartController.createOrder);
 
 router.get("/quantity", cartController.getTotalProduct);
+
+router.get("/quantity/totalValue", cartController.getTotalCartValue);
 
 //export
 module.exports = router; 

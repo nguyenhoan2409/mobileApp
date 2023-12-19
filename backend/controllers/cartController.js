@@ -229,7 +229,7 @@ const cartController = {
   // get total products in cart
   getTotalProduct: async (req, res, next) => {
     try {
-      const userId = req.query.userId;
+      const userId = req.query.id;
       let totalProduct = 0;
       const userExists = await User.findById(userId);
       if (!userExists) {
@@ -247,6 +247,36 @@ const cartController = {
       return next(error);
     }
   },
+
+  getTotalCartValue: async (req, res, next) => {
+    try {
+        const userId = req.query.id;
+
+        const userExists = await User.findById(userId);
+        if (!userExists) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        const cartUser = await Cart.findOne({ user_id: userId }).populate('product.product_id');
+        if (!cartUser) {
+            return res.status(404).json({ message: "Cart not found." });
+        }
+
+        let totalValue = 0;
+        cartUser.product.forEach((item) => {
+            if (item.product_id) {
+                totalValue += item.quantity * item.product_id.discountPrice;
+            }
+        });
+
+        res.status(200).json({ totalValue });
+    } catch (error) {
+        console.error("Error calculating total cart value:", error);
+        res.status(500).json({ message: "An error occurred.", error: error.message });
+        next(error);
+    }
+},
+
 };
 
 // export
