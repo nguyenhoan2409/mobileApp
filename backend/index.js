@@ -18,6 +18,7 @@ const orderRouter = require('./routes/orderRoutes');
 const couponRouter = require('./routes/couponRouter');
 const eventRouter = require('./routes/eventRouter');
 const reviewRouter = require('./routes/reviewRouter');
+const messageRouter = require('./routes/messageRoutes');
 
 const cloudinary = require('cloudinary').v2;
 
@@ -75,6 +76,8 @@ app.use('/orders', orderRouter);
 app.use("/coupon", couponRouter);
 app.use("/event", eventRouter);
 app.use("/review", reviewRouter);
+app.use("/message", messageRouter);
+
 
 // server running
 
