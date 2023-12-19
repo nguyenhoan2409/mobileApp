@@ -5,10 +5,12 @@ const { checkAdminRole } = require('../middlewares/authorization');
 
 router.get('/all', checkAdminRole, orderController.getAllOrders);
 
-router.get('/:id', checkAdminRole, orderController.getOrderById);
+router.get('/', checkAdminRole, orderController.getOrderById);
 
-router.post('/update/:id', checkAdminRole, orderController.updateOrder);
+router.post('/update/', checkAdminRole, orderController.updateOrder);
 
-router.post('/delete/:id', checkAdminRole, orderController.deleteOrder);
+router.post('/delete/', checkAdminRole, orderController.deleteOrder);
+
+router.get('/sales-stats/total', checkAdminRole, orderController.getSalesStats);
 
 module.exports = router;

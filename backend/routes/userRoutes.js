@@ -7,9 +7,14 @@ router.post("/create", checkAdminRole, userController.createUser);
 
 router.post("/", checkAdminRole, userController.updateUser);
 
-router.get("/:id",checkAdminRole, userController.getUserById);
+router.get("/details",checkAdminRole, userController.getUserById);
 
 router.get("/",checkAdminRole, userController.getAllUser);
 
 router.delete("/delete", checkAdminRole, userController.deleteUser);
+
+router.post('/addRecentlyViewed', userController.addRecentlyViewedProduct);
+
+router.get('/recentlyViewed/list', userController.getRecentlyViewedProducts);
+
 module.exports = router;
