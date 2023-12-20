@@ -19,7 +19,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {SliderBox} from 'react-native-image-slider-box';
 import ProductCardView from '../components/ProductCardView';
 
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -38,7 +37,18 @@ import axios from 'axios';
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const navigation = useNavigation();
+  const [categoryList, setCategoryList] = useState([]);
+  const [recommendedProductList, setRecommendedProductList] = useState([]); 
+  const [recentlyViewedProductList, setRecentlyViewedProductList] = useState([]);
+  const [quantityInCart, setQuantityInCart] = useState(0);  
+  const [userToken, setUserToken] = useState('');
+  const [change, setChange] = useState(true); 
 
+  const translationMap = {
+    "table": "bàn",
+  };
+  
 
   const list = [
     {
@@ -186,7 +196,7 @@ const Home = () => {
   const searchWithImage = async (imageUri) => {
     try {
       const imageBase64 = await convertImageToBase64(imageUri);
-      const base64EncodedImage = imageBase64.split(',')[1]; // Loại bỏ phần "data:image/jpeg;base64,"
+      const base64EncodedImage = imageBase64.split(',')[1];
   
       const body = {
         requests: [
@@ -211,8 +221,14 @@ const Home = () => {
         console.log(response)
       }
       const labels = response.data.responses[0].labelAnnotations;
-      const firstLabel = labels[0].description;
-      setSearchQuery(firstLabel);
+      const originalLabel = labels[0].description;
+
+      let translatedLabel = originalLabel;
+      if (translationMap[originalLabel.toLowerCase()]) {
+        translatedLabel = translationMap[originalLabel.toLowerCase()];
+      }
+
+      setSearchQuery(translatedLabel);
     } catch (error) {
       if (error.response) {
         console.log("Error Data:", error.response.data);
@@ -226,15 +242,7 @@ const Home = () => {
       console.log("Error Config:", error.config);
     }
   };
-  
 
-  const navigation = useNavigation();
-  const [categoryList, setCategoryList] = useState([]);
-  const [recommendedProductList, setRecommendedProductList] = useState([]); 
-  const [recentlyViewedProductList, setRecentlyViewedProductList] = useState([]);
-  const [quantityInCart, setQuantityInCart] = useState(0);  
-  const [userToken, setUserToken] = useState('');
-  const [change, setChange] = useState(true); 
   useEffect(() => {
     const getList = async () => {
       try {
@@ -408,27 +416,9 @@ const Home = () => {
                   size={26}
                   style={styles.cartIcon}
                 />
-                {/* <View style={styles.cartQuantityWrapper}>
-                  <Text style={styles.cartQuantity}>{quantityInCart}</Text>
-                </View> */}
               </TouchableOpacity>
             </View>
           </View>
-
-          {/* <View style={styles.carouselContainer}>
-            <SliderBox
-              images={slides}
-              dotColor={COLORS.primary}
-              inactiveDotColor={COLORS.secondary}
-              ImageComponentStyle={{
-                borderRadius: 15,
-                width: '95%',
-                marginTop: 15,
-              }}
-              autoplay
-              circleLoop
-            />
-          </View> */}
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={{flexDirection: 'column'}}>
