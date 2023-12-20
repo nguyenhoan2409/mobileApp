@@ -18,15 +18,17 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import API from '../../services/GlobalAPI';
-import getToken from '../../services/authService'
+import getToken from '../../services/authService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { showMessage } from 'react-native-flash-message';
 
 const Login = () => {
   const navigation = useNavigation();
   const [password, setPassword] = useState('');
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [rightIcon, setRightIcon] = useState('eye');
-  const [email, setEmail] = useState('');
+  const [userName, setUserName] = useState('');
   const [message, setMessage] = useState('');
 
   const handlePasswordVisibility = () => {
@@ -41,21 +43,47 @@ const Login = () => {
 
   const handleLogin = async () => {
     const loginData = {
-      username: email,
-      password: password
+      username: userName,
+      password: password,
     };
-  
-    const response = await API.requestPOST_Login('/auth/login', loginData);
-  
-    if (response && response.token) {
-      AsyncStorage.setItem('userToken', response.token);
 
-      navigation.navigate('BottomTabBuyer');
+    const response = await API.requestPOST_Login('/auth/login', loginData);
+    if (response && response.token) {
+      await AsyncStorage.setItem('userToken', response.token);
+      await AsyncStorage.setItem('userId', response.userId); 
+      // async function getItem(item) {
+      //   try {
+      //     const value = await AsyncStorage.getItem(item);
+      //     console.log(value);
+      //     return value;
+      //   } catch (error) {
+      //     // Handle errors here
+      //   }
+      // }
+      // getItem('userToken');
+      if (response.userRoleId == '653a2551a823940702a4b910' || response.userRoleId == "653a2519a823940702a4b90a") {
+        navigation.navigate('BottomTabSeller');
+        setUserName('');
+        setPassword('');
+      } else {
+        navigation.navigate('BottomTabBuyer');
+        setUserName('');
+        setPassword('');
+      }
     } else {
-      setMessage('Đăng nhập không thành công');
+      // setMessage('Email hoặc mật khẩu sai. Vui lòng kiểm tra lại.');
+      showMessage({
+        message: "Lỗi",
+        description: "Email hoặc mật khẩu sai. Vui lòng kiểm tra lại.",
+        type: "danger",
+        position: 'top', 
+        duration: 5000,
+        icon: props => <AntDesign name='warning' size={22} color={COLORS.white} style={{padding: 10}}{...props} />,
+      });
     }
   };
 
+  
   return (
     <ScrollView>
       <SafeAreaView style={{marginHorizontal: 20}}>
@@ -67,17 +95,18 @@ const Login = () => {
           {/* <Text style={styles.title}>Khám phá thế giới nội thất</Text> */}
           <View>
             <View style={styles.wrapper}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={styles.label}>Username</Text>
               <View style={styles.inputWrapper}>
-                <Fontisto
-                  name="email"
+                <AntDesign
+                  name="user"
                   size={20}
                   color={COLORS.gray}
                   style={styles.iconStyle}
                 />
                 <TextInput
-                  placeholder="Enter email"
-                  onChangeText={text => setEmail(text)}
+                  placeholder="Enter username"
+                  value={userName}
+                  onChangeText={text => setUserName(text)}
                 />
               </View>
             </View>
@@ -130,7 +159,9 @@ const Login = () => {
               </Text>
             </Pressable>
 
-            {message ? <Text style={styles.errorMessage}>{message}</Text> : null}
+            {/* {message ? (
+              <Text style={styles.errorMessage}>{message}</Text>
+            ) : null} */}
 
             <TouchableOpacity
               onPress={() => navigation.navigate('SignUp')}
@@ -211,15 +242,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 15,
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   eyeIcon: {
-    zIndex: 999
+    zIndex: 999,
   },
   errorMessage: {
     color: 'red',
     textAlign: 'center',
-    marginTop: 10
+    marginTop: 10,
   },
 });
 export default Login;

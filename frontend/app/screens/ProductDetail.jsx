@@ -13,8 +13,7 @@ const ProductDetail = ({ navigation }) => {
 
     const route = useRoute();
     const { item } = route.params;
-    console.log(item, " productDetails"); //working
-
+    
     const increment = (e) => {
         e.preventDefault();
         setCount(count + 1)
@@ -33,12 +32,12 @@ const ProductDetail = ({ navigation }) => {
                     <Ionicons name='heart' size={30} color={COLORS.primary} />
                 </TouchableOpacity>
             </View>
-            <Image source={{ uri: item.imageUrl }} style={styles.image} />
+            <Image source={{ uri: item.images[0].url }} style={styles.image} />
             <View style={styles.details}>
                 <View style={styles.titleRow}  >
-                    <Text style={styles.title}>{item.title}</Text>
+                    <Text style={styles.title}>{item.name}</Text>
                     <View style={styles.priceWrapper}>
-                        <Text style={styles.price}>{item.price}</Text>
+                        <Text style={styles.price}>{item.originalPrice}</Text>
                     </View>
                 </View>
             </View>
@@ -63,7 +62,7 @@ const ProductDetail = ({ navigation }) => {
 
             <View style={styles.descriptionWrapper}>
                 <Text style={styles.description}>
-                    Description
+                    Mô tả
                 </Text>
                 <Text style={styles.descText}>
                     {item.description}
@@ -79,17 +78,18 @@ const ProductDetail = ({ navigation }) => {
 
                     <View style={{ flexDirection: "row" }}>
                         <MaterialCommunityIcons name="truck-delivery-outline" size={24} />
-                        <Text>   Free dilevery  </Text>
+                        <Text>   Miễn phí vận chuyển  </Text>
                     </View>
                 </View>
 
                 <View style={styles.cartRow}>
-                    <TouchableOpacity onPress={() => { }} style={styles.cartBtn}>
-                        <Text style={styles.cartTitle}> BUY NOW </Text>
+                    <TouchableOpacity onPress={() => { }} style={styles.addToCartBtn}>
+                        <Text style={styles.cartTitle}> Thêm vào giỏ hàng </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => { }} style={styles.addCart}>
-                        <Fontisto name='shopping-bag' size={22} color={COLORS.lightWhite} />
+                    <TouchableOpacity onPress={() => { }} style={styles.makeOrderBtn}>
+                        <Text style={styles.cartTitle}> Đặt hàng ngay </Text>
                     </TouchableOpacity>
+                    
                 </View>
             </View>
         </View>
@@ -198,23 +198,31 @@ const styles = StyleSheet.create({
     
       cartRow: {
         paddingBottom: SIZES.small,
-        flexDirection: "row",
+        flexDirection: "column",
         justifyContent: "space-between",
         alignItems: "center",
         width: SIZES.width,
       },
-      cartBtn: {
+      addToCartBtn: {
+        width: SIZES.width * 0.7,
+        backgroundColor: COLORS.gray,
+        padding: SIZES.small,
+        borderRadius: SIZES.large,
+        marginTop: 10,
+      },
+      makeOrderBtn: {
         width: SIZES.width * 0.7,
         backgroundColor: COLORS.black,
         padding: SIZES.small,
         borderRadius: SIZES.large,
-        marginLeft: 12,
+        marginTop: 10,
       },
       cartTitle: {
         marginLeft: SIZES.small,
         fontWeight: "bold",
         fontSize: SIZES.medium,
         color: COLORS.lightWhite,
+        textAlign: 'center'
       },
       addCart: {
         width: 37,

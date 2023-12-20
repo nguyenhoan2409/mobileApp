@@ -229,7 +229,7 @@ const cartController = {
   // get total products in cart
   getTotalProduct: async (req, res, next) => {
     try {
-      const userId = req.query.id;
+      const userId = req.query.userId;
       let totalProduct = 0;
       const userExists = await User.findById(userId);
       if (!userExists) {
@@ -237,7 +237,10 @@ const cartController = {
       }
       let cartUser = await Cart.findOne({ user_id: userId });
       if (!cartUser) {
-        return res.status(404).json({ message: "User does not have a cart." });
+        cartUser = new Cart({
+          user_id: userId,
+          product: [],
+        });
       }
       for (let i = 0; i < cartUser.product.length; i++) {
         totalProduct += cartUser.product[i].quantity;
@@ -250,7 +253,7 @@ const cartController = {
 
   getTotalCartValue: async (req, res, next) => {
     try {
-        const userId = req.query.id;
+        const userId = req.query.userId;
 
         const userExists = await User.findById(userId);
         if (!userExists) {

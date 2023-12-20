@@ -3,7 +3,7 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const { checkAdminRole } = require('../middlewares/authorization');
 
-router.post("/create", checkAdminRole, userController.createUser);
+router.post("/create", userController.createUser);
 
 router.post("/", checkAdminRole, userController.updateUser);
 

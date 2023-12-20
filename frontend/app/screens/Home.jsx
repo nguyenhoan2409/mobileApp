@@ -4,13 +4,13 @@ import {
   View,
   SafeAreaView,
   Platform,
-  ScrollView,
   Pressable,
   TextInput,
   Image,
   TouchableOpacity,
   FlatList,
 } from 'react-native';
+import { ScrollView } from 'react-native-virtualized-view';
 import React from 'react';
 import {useState, useEffect, useCallback, useContext} from 'react';
 
@@ -28,8 +28,11 @@ import {useSelector} from 'react-redux';
 import {BottomModal, SlideAnimation, ModalContent} from 'react-native-modals';
 import { launchImageLibrary } from 'react-native-image-picker';
 
-import {COLORS, SIZES} from '../constants'
+import {COLORS, SIZES} from '../constants';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import API from '../services/GlobalAPI';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {showMessage} from 'react-native-flash-message';
 import axios from 'axios';
 
 
@@ -72,10 +75,22 @@ const Home = () => {
       id: '6',
       image:
         'https://th.bing.com/th/id/OIP.mTSCRAo8PvptYtMxV9OwcgHaDO?pid=ImgDet&rs=1',
-      name: 'Thảm, gối, chăn',
+      name: 'Thảm',
     },
     {
-      id: '6',
+      id: '7',
+      image:
+        'https://png.pngtree.com/png-clipart/20220110/original/pngtree-pillow-png-image_7042813.png',
+      name: 'Gối',
+    },
+    {
+      id: '8',
+      image:
+        'https://th.bing.com/th/id/OIP.vaOm7I3oJ6oiptbnCoI2QQHaD4?rs=1&pid=ImgDetMain',
+      name: 'Chăn',
+    },
+    {
+      id: '9',
       image:
         'https://th.bing.com/th/id/OIP.xjj6DRXcOh4yxwGZjLCZsgHaD3?pid=ImgDet&w=1200&h=627&rs=1',
       name: 'Đồ trang trí',
@@ -83,33 +98,33 @@ const Home = () => {
   ];
   const productList = [
     {
-      title: 'Ghế sofa',
+      name: 'Ghế sofa',
       supplier: 'ZONO',
-      price: 2000000,
+      originalPrice: 2000000,
       imageUrl:
         'https://th.bing.com/th/id/OIP.WMZMXQ1kgEqFi9Qfv7o3VAHaHa?pid=ImgDet&rs=1',
       description: 'Ghế sofa',
     },
     {
-      title: 'Ghế sofa',
+      name: 'Ghế sofa',
       supplier: 'ZONO',
-      price: 2000000,
+      originalPrice: 2000000,
       imageUrl:
         'https://th.bing.com/th/id/OIP.WMZMXQ1kgEqFi9Qfv7o3VAHaHa?pid=ImgDet&rs=1',
       description: 'Ghế sofa',
     },
     {
-      title: 'Ghế sofa',
+      name: 'Ghế sofa',
       supplier: 'ZONO',
-      price: 2000000,
+      originalPrice: 2000000,
       imageUrl:
         'https://th.bing.com/th/id/OIP.WMZMXQ1kgEqFi9Qfv7o3VAHaHa?pid=ImgDet&rs=1',
       description: 'Ghế sofa',
     },
     {
-      title: 'Ghế sofa',
+      name: 'Ghế sofa',
       supplier: 'ZONO',
-      price: 2000000,
+      originalPrice: 2000000,
       imageUrl:
         'https://th.bing.com/th/id/OIP.WMZMXQ1kgEqFi9Qfv7o3VAHaHa?pid=ImgDet&rs=1',
       description: 'Ghế sofa',
@@ -212,7 +227,149 @@ const Home = () => {
     }
   };
   
+
   const navigation = useNavigation();
+  const [categoryList, setCategoryList] = useState([]);
+  const [recommendedProductList, setRecommendedProductList] = useState([]); 
+  const [recentlyViewedProductList, setRecentlyViewedProductList] = useState([]);
+  const [quantityInCart, setQuantityInCart] = useState(0);  
+  const [userToken, setUserToken] = useState('');
+  const [change, setChange] = useState(true); 
+  useEffect(() => {
+    const getList = async () => {
+      try {
+        const value = await AsyncStorage.getItem('userToken');
+        setUserToken(value); 
+        var response = await API.requestGET_SP(
+          `/categories/all?token=${value}`,
+        );
+        var recommended_product_list = await API.requestGET_SP(`/products/all?token=${value}`); 
+        if (response) {
+          setCategoryList(response);
+        } else {
+          showMessage({
+            message: 'Lỗi get danh mục sản phẩm',
+            description: '',
+            type: 'danger',
+            position: 'top',
+            duration: 2000,
+            icon: props => (
+              <AntDesign
+                name="warning"
+                size={22}
+                color={COLORS.white}
+                style={{padding: 10}}
+                {...props}
+              />
+            ),
+          });
+        }
+
+        if (recommended_product_list) { 
+          setRecommendedProductList(recommended_product_list);
+        } else {
+          showMessage({
+            message: 'Lỗi get sản phẩm đề xuất',
+            description: '',
+            type: 'danger',
+            position: 'top',
+            duration: 2000,
+            icon: props => (
+              <AntDesign
+                name="warning"
+                size={22}
+                color={COLORS.white}
+                style={{padding: 10}}
+                {...props}
+              />
+            ),
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getList();
+  }, []);
+
+  const getSeenProductList = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId'); 
+      var recently_viewed_product_list = await API.requestGET_SP(`/users/recentlyViewed/list?id=${userId}`); 
+      if (recently_viewed_product_list) {
+        setRecentlyViewedProductList(recently_viewed_product_list.recentlyViewedProducts);
+      } else {
+        showMessage({
+          message: 'Lỗi get sản phẩm đề xuất',
+          description: '',
+          type: 'danger',
+          position: 'top',
+          duration: 2000,
+          icon: props => (
+            <AntDesign
+              name="warning"
+              size={22}
+              color={COLORS.white}
+              style={{padding: 10}}
+              {...props}
+            />
+          ),
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+  const getQuantityInCart = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId'); 
+      var total = await API.requestGET_SP(`/carts/quantity?userId=${userId}`); 
+      if (total) {
+        console.log('hello')
+         
+        setQuantityInCart(total.totalProduct);
+      } else {
+        showMessage({
+          message: 'Lỗi get số lượng sản phẩm trong giỏ hàng',
+          description: '',
+          type: 'danger',
+          position: 'top',
+          duration: 2000,
+          icon: props => (
+            <AntDesign
+              name="warning"
+              size={22}
+              color={COLORS.white}
+              style={{padding: 10}}
+              {...props}
+            />
+          ),
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const updateQuantityIncart = () => {
+    setChange(!change);
+  }
+
+  useEffect(() => {
+    getSeenProductList(); 
+    getQuantityInCart();
+  }, []); 
+
+  // useEffect(() => {
+    
+  // }, [change]); 
+
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      getSeenProductList(); 
+    })
+  }, [])
   
   return (
     <>
@@ -245,20 +402,20 @@ const Home = () => {
             </View>
 
             <View style={styles.cartBtnWrapper}>
-              <TouchableOpacity style={styles.cartBtn}>
+              <TouchableOpacity style={styles.cartBtn} onPress={() => {navigation.navigate('Cart')}}>
                 <AntDesign
                   name="shoppingcart"
                   size={26}
                   style={styles.cartIcon}
                 />
-                <View style={styles.cartQuantityWrapper}>
-                  <Text style={styles.cartQuantity}>8</Text>
-                </View>
+                {/* <View style={styles.cartQuantityWrapper}>
+                  <Text style={styles.cartQuantity}>{quantityInCart}</Text>
+                </View> */}
               </TouchableOpacity>
             </View>
           </View>
 
-          <View style={styles.carouselContainer}>
+          {/* <View style={styles.carouselContainer}>
             <SliderBox
               images={slides}
               dotColor={COLORS.primary}
@@ -271,36 +428,53 @@ const Home = () => {
               autoplay
               circleLoop
             />
-          </View>
+          </View> */}
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {list.map((item, index) => (
-              <Pressable
-                key={index}
-                style={{
-                  margin: 10,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                onPress={() => {
-                  navigation.navigate('ProductCateList', {item});
-                }}>
-                <Image
-                  style={{width: 50, height: 50, resizeMode: 'contain'}}
-                  source={{uri: item.image}}
-                />
+            <View style={{flexDirection: 'column'}}>
+              <View style={{flexDirection: 'row'}}>
+                {list.map((item, index) => (
+                  <Image
+                    style={{
+                      width: 50,
+                      height: 50,
+                      resizeMode: 'contain',
+                      marginLeft: 10,
+                    }}
+                    key={index}
+                    source={{uri: item.image}}
+                  />
+                ))}
+              </View>
 
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    fontSize: 12,
-                    fontWeight: '500',
-                    marginTop: 5,
-                  }}>
-                  {item?.name}
-                </Text>
-              </Pressable>
-            ))}
+              <View style={{flexDirection: 'row'}}>
+                {categoryList.map((item, index) => (
+                  <Pressable
+                    key={item._id}
+                    style={{
+                      marginLeft: 30,
+                      marginBottom: 10,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                    onPress={() => {
+                      navigation.navigate('ProductCateList', {item});
+                      navigation.addListener
+                    }}>
+                    
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontSize: 12,
+                        fontWeight: '500',
+                        marginTop: 5,
+                      }}>
+                      {item?.name}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
           </ScrollView>
 
           <View style={styles.recommendProductWrapper}>
@@ -311,50 +485,60 @@ const Home = () => {
                 alignItems: 'center',
               }}>
               <Text style={styles.header}>Đề xuất cho bạn</Text>
-              
-              <TouchableOpacity onPress={() => {navigation.navigate('RecommendedProducts', productList)}}>
-              <Text style={{color: COLORS.gray1, paddingRight: SIZES.small}}>Xem tất cả</Text>
+
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('RecommendedProducts', recommendedProductList);
+                }}>
+                <Text style={{color: COLORS.gray1, paddingRight: SIZES.small}}>
+                  Xem tất cả
+                </Text>
               </TouchableOpacity>
             </View>
             <FlatList
-              data={productList}
+              data={recommendedProductList}
               keyExtractor={item => item._id}
               maxToRenderPerBatch={2}
               renderItem={({item, index}) => (
-                <ProductCardView item={item} key={index} />
+                <ProductCardView item={item} key={item._id} />
               )}
               horizontal
-              contentContainerStyle={{columnGap: SIZES.medium - 5}}></FlatList>
+              contentContainerStyle={{columnGap: SIZES.medium - 5}} />
           </View>
 
           <View style={styles.seenProductWrapper}>
-          <View
+            <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center',
               }}>
               <Text style={styles.header}>Sản phẩm đã xem</Text>
-              
-              <TouchableOpacity onPress={() => navigation.navigate('SeenProducts', productList)}>
-              <Text style={{color: COLORS.gray1, paddingRight: SIZES.small}}>Xem tất cả</Text>
+
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('SeenProducts', recentlyViewedProductList)
+                }>
+                <Text style={{color: COLORS.gray1, paddingRight: SIZES.small}}>
+                  Xem tất cả
+                </Text>
               </TouchableOpacity>
             </View>
-            {productList.length < 0 ? (
+            {recentlyViewedProductList.length == 0 ? (
               <Text style={{color: COLORS.black}}>
                 Bạn chưa xem sản phẩm nào
               </Text>
             ) : (
               <FlatList
-                data={productList}
+                data={recentlyViewedProductList}
                 keyExtractor={item => item._id}
                 renderItem={({item, index}) => (
-                  <ProductCardView item={item} key={index} />
+                  <ProductCardView item={item} key={item._id} />
                 )}
                 horizontal
                 contentContainerStyle={{
                   columnGap: SIZES.medium - 5,
-                }}></FlatList>
+                }} />
             )}
           </View>
         </ScrollView>
@@ -419,10 +603,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   cartBtnWrapper: {
-    alignItems: 'center', 
-    justifyContent: 'center', 
+    alignItems: 'center',
+    justifyContent: 'center',
     // backgroundColor: COLORS.black
-    paddingLeft: 5
+    paddingLeft: 5,
   },
   cartQuantityWrapper: {
     backgroundColor: COLORS.red,

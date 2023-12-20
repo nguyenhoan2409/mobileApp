@@ -30,10 +30,15 @@ exports.getToken = async (req, res, next) => {
         }
 
         const token = user.getJwtToken();
+        const userRoleId = user.roleId; 
+        const userId = user._id; 
+        
 
         res.status(200).json({
             success: true,
-            token
+            token, 
+            userRoleId,
+            userId, 
         });
 
     } catch (error) {
