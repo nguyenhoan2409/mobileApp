@@ -106,8 +106,8 @@ const productController = {
                     folder: "products",
                 });
                 imageLinks.push({
-                    public_id: result.public_id,
-                    url: result.secure_url,
+                    public_id: i,
+                    url: images[i],
                 });
             }
     
@@ -168,9 +168,9 @@ const productController = {
             }
     
             if (images && images.length > 0) {
-                for (let i = 0; i < product.images.length; i++) {
-                    await cloudinary.uploader.destroy(product.images[i].public_id);
-                }
+                // for (let i = 0; i < product.images.length; i++) {
+                //     await cloudinary.uploader.destroy(product.images[i].public_id);
+                // }
     
                 let imageLinks = [];
                 if (typeof images === "string") {
@@ -182,8 +182,8 @@ const productController = {
                         folder: "products",
                     });
                     imageLinks.push({
-                        public_id: result.public_id,
-                        url: result.secure_url,
+                        public_id: i,
+                        url: images[i],
                     });
                 }
                 product.images = imageLinks;

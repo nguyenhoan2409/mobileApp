@@ -1,21 +1,22 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
   Text,
   SafeAreaView,
-  ScrollView,
   TouchableOpacity,
   FlatList,
   ViewComponent,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
+import {ScrollView} from 'react-native-virtualized-view';
 import {SIZES} from '../../constants';
 import {COLORS} from '../../constants';
 import {useNavigation} from '@react-navigation/native';
 import OrderCardView from '../../components/OrderCardView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
+import API from '../../services/GlobalAPI';
 
 const HomeSeller = () => {
   const orderList = [
@@ -52,7 +53,78 @@ const HomeSeller = () => {
       total: '150000VNĐ',
     },
   ];
+
   const navigation = useNavigation();
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [totalSoldProduct, setTotalSoldProduct] = useState(0);
+  const [totalOrder, setTotalOrder] = useState(0);
+  const [recentlyOrderList, setRecentlyOrderList] = useState([]);
+  const [userInfo, setUserInfo] = useState([]);
+
+  const getStatisticNumbers = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      var respone = await API.requestGET_SP(
+        `/orders/sales-stats/total?token=${token}`,
+      );
+      if (respone) {
+        setTotalRevenue(respone.totalRevenue);
+        setTotalSoldProduct(respone.totalProductsSold);
+        setTotalOrder(respone.totalOrders);
+      }
+    } catch (error) {
+      console.log(error);
+      showMessage({
+        message: 'Lỗi lấy thông tin số liệu thống kê',
+        description: '',
+        type: 'danger',
+        position: 'top',
+        duration: 2000,
+        icon: props => (
+          <AntDesign
+            name="warning"
+            size={22}
+            color={COLORS.white}
+            style={{padding: 10}}
+            {...props}
+          />
+        ),
+      });
+    }
+  };
+
+  const getRecentlyOrderList = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      var respone = await API.requestGET_SP(`/orders/all?token=${token}`);
+      if (respone) {
+        setRecentlyOrderList(respone);
+      }
+    } catch (error) {
+      console.log(error);
+      showMessage({
+        message: 'Lỗi lấy thông tin số liệu thống kê',
+        description: '',
+        type: 'danger',
+        position: 'top',
+        duration: 2000,
+        icon: props => (
+          <AntDesign
+            name="warning"
+            size={22}
+            color={COLORS.white}
+            style={{padding: 10}}
+            {...props}
+          />
+        ),
+      });
+    }
+  };
+
+  useEffect(() => {
+    getStatisticNumbers();
+    getRecentlyOrderList();
+  }, []);
   return (
     <>
       <SafeAreaView>
@@ -78,11 +150,13 @@ const HomeSeller = () => {
             <View style={styles.statisValueWrapper}>
               <View style={styles.statisValue}>
                 <Text style={styles.statisValueHeader}>Tổng doanh thu</Text>
-                <Text>2000000VNĐ</Text>
+                <Text>{totalRevenue} VNĐ</Text>
               </View>
               <View style={styles.statisValue}>
-                <Text style={styles.statisValueHeader}>Tổng sản phẩm bán ra</Text>
-                <Text>3</Text>
+                <Text style={styles.statisValueHeader}>
+                  Tổng sản phẩm bán ra
+                </Text>
+                <Text>{totalSoldProduct}</Text>
               </View>
             </View>
             <View style={styles.statisValueWrapper}>
@@ -92,33 +166,38 @@ const HomeSeller = () => {
               </View>
               <View style={styles.statisValue}>
                 <Text style={styles.statisValueHeader}>Số lượng đơn hàng</Text>
-                <Text>4</Text>
+                <Text>{totalOrder}</Text>
               </View>
             </View>
           </View>
 
           <View>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text
-              style={{
-                color: COLORS.black,
-                fontSize: SIZES.large,
-                fontWeight: 'bold',
-                marginLeft: SIZES.xSmall,
-              }}>
-              Đơn hàng gần đây
-            </Text>
-            <Text style={{color: COLORS.black, marginRight: 10, marginTop: 5}}>Xem tất cả</Text>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Text
+                style={{
+                  color: COLORS.black,
+                  fontSize: SIZES.large,
+                  fontWeight: 'bold',
+                  marginLeft: SIZES.xSmall,
+                }}>
+                Đơn hàng gần đây
+              </Text>
+              <Text
+                style={{color: COLORS.black, marginRight: 10, marginTop: 5}}>
+                Xem tất cả
+              </Text>
             </View>
 
             <FlatList
-              data={orderList}
+              data={recentlyOrderList}
               keyExtractor={item => item._id}
               //   maxToRenderPerBatch={2}
               renderItem={({item, index}) => (
                 <OrderCardView item={item} key={index} />
               )}
-              contentContainerStyle={{columnGap: SIZES.medium - 5}}></FlatList>
+              contentContainerStyle={{columnGap: SIZES.medium - 5}}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>

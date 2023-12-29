@@ -7,7 +7,7 @@ router.post("/create", userController.createUser);
 
 router.post("/", checkAdminRole, userController.updateUser);
 
-router.get("/details",checkAdminRole, userController.getUserById);
+router.get("/details", userController.getUserById);
 
 router.get("/",checkAdminRole, userController.getAllUser);
 

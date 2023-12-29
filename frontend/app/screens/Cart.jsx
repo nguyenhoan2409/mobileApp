@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   FlatList,
+  Image,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {ScrollView} from 'react-native-virtualized-view';
@@ -17,43 +18,80 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {COLORS, SIZES} from '../constants';
 import OrderCardView from '../components/OrderCardView';
+import CartCardView from '../components/CartCardView';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
+import API from '../services/GlobalAPI';
+
 
 const Cart = () => {
   const navigation = useNavigation();
-  const productList = [
-    {
-      customerName: 'Ghế sofa',
-      orderId: '150000 * 1',
-      date: '',
-      imageUrl:
-        'https://res.cloudinary.com/dzahzhy9f/image/upload/v1702970193/products/jprqudqoowafvqtfase6.jpg',
-      total: '150000VNĐ',
-    },
-    {
-      customerName: 'Bàn học 1',
-      orderId: '150000 * 2',
-      date: '',
-      imageUrl:
-        'https://res.cloudinary.com/dzahzhy9f/image/upload/v1702981896/products/nhjkzklzc0omyifyrklt.jpg',
-      total: '150000VNĐ',
-    },
-    {
-      customerName: 'Bàn học 2',
-      orderId: '150000 * 3',
-      date: '',
-      imageUrl:
-        'https://res.cloudinary.com/dzahzhy9f/image/upload/v1702981911/products/w78rcnalfdbxvq31yeww.jpg',
-      total: '150000VNĐ',
-    },
-    {
-      customerName: 'Bàn học 3',
-      orderId: '150000 * 4',
-      date: '',
-      imageUrl:
-        'https://res.cloudinary.com/dzahzhy9f/image/upload/v1702981923/products/wlwdlu9fkyeyei6oac6o.jpg',
-      total: '150000VNĐ',
-    },
-  ];
+  const [cartProductList, setCartProductList] = useState([]); 
+  const [userInfoDetail, setUserInfoDetail] = useState([]); 
+
+  const getCartProductList = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId'); 
+      var cart_product_list = await API.requestGET_SP(`/carts?userId=${userId}`); 
+      if (cart_product_list) {
+        setCartProductList(cart_product_list);
+      } else {
+        showMessage({
+          message: 'Lỗi get sản phẩm trong giỏ hàng',
+          description: '',
+          type: 'danger',
+          position: 'top',
+          duration: 2000,
+          icon: props => (
+            <AntDesign
+              name="warning"
+              size={22}
+              color={COLORS.white}
+              style={{padding: 10}}
+              {...props}
+            />
+          ),
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getUserInfoDetails = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      const token = await AsyncStorage.getItem('userToken');
+      var userDetails = await API.requestGET_SP(
+        `/users/details?id=${userId}&token=${token}`,
+      );
+      if (userDetails) {
+        setUserInfoDetail(userDetails); 
+      } else {
+        showMessage({
+          message: 'Lỗi lấy thông tin khách hàng',
+          description: '',
+          type: 'danger',
+          position: 'top',
+          duration: 2000,
+          icon: props => (
+            <AntDesign
+              name="warning"
+              size={22}
+              color={COLORS.white}
+              style={{padding: 10}}
+              {...props}
+            />
+          ),
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getCartProductList(); 
+  }, []); 
 
   return (
     <>
@@ -75,17 +113,18 @@ const Cart = () => {
 
           <View>
             <FlatList
-              data={productList}
+              data={cartProductList}
               keyExtractor={item => item._id}
               //   maxToRenderPerBatch={2}
               renderItem={({item, index}) => (
-                <OrderCardView item={item} key={index} />
+                <CartCardView item={item} key={index} />
               )}
               contentContainerStyle={{columnGap: SIZES.medium - 5}}
             />
           </View>
 
-          <View style={{marginTop: 30}}>
+          
+          {/* <View style={{marginTop: 30}}>
             <Text
               style={{
                 fontSize: SIZES.medium,
@@ -117,7 +156,7 @@ const Cart = () => {
                 1500000000VNĐ
               </Text>
             </View>
-          </View>
+          </View> */}
 
           <View style={{alignItems: 'center', marginTop: 10}}>
             <TouchableOpacity onPress={() => {navigation.navigate('Pay')}} style={styles.makeOrderBtn}>
@@ -165,4 +204,5 @@ const styles = StyleSheet.create({
     color: COLORS.lightWhite,
     textAlign: 'center',
   },
+
 });

@@ -7,9 +7,10 @@ import {
   StyleSheet,
   TextInput,
   Pressable,
+  SafeAreaView
 } from 'react-native';
 import React, {useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
+// import {SafeAreaView} from 'react-native-safe-area-context';
 import {SIZES, COLORS} from '../../constants';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -46,11 +47,11 @@ const Login = () => {
       username: userName,
       password: password,
     };
-
     const response = await API.requestPOST_Login('/auth/login', loginData);
     if (response && response.token) {
       await AsyncStorage.setItem('userToken', response.token);
       await AsyncStorage.setItem('userId', response.userId); 
+      await AsyncStorage.setItem('userRoleId', response.userRoleId); 
       // async function getItem(item) {
       //   try {
       //     const value = await AsyncStorage.getItem(item);
@@ -74,7 +75,7 @@ const Login = () => {
       // setMessage('Email hoặc mật khẩu sai. Vui lòng kiểm tra lại.');
       showMessage({
         message: "Lỗi",
-        description: "Email hoặc mật khẩu sai. Vui lòng kiểm tra lại.",
+        description: "Username hoặc mật khẩu sai. Vui lòng kiểm tra lại.",
         type: "danger",
         position: 'top', 
         duration: 5000,
