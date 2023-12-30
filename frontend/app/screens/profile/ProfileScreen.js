@@ -1,31 +1,99 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
+  Alert,
+  Image,
   StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
-  View,
-  Image,
-  StyleProp,
-  ViewStyle,
-  Touchable,
-  TouchableOpacity, 
+  TouchableOpacity,
+  View
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import {COLORS, SIZES} from '../MyApp/constans';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { showMessage } from 'react-native-flash-message';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { COLORS, SIZES } from '../../constants';
+import API from '../../services/GlobalAPI';
 const ProfileScreen = () => {
- 
+  const navigation = useNavigation();
+  const [username, setUsername] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [userId, setUserId] = useState('');
+  const [token, setToken] = useState('');
+  
+  useEffect(() => {
+    const getUserDetails = async () => {
+      try {
+        const storedUsername = await AsyncStorage.getItem('username');
+        const storedUserEmail = await AsyncStorage.getItem('email');
+        const storedToken = await AsyncStorage.getItem('token');
+          //console.log(storedToken);
+       //console.log("UserName",storedUsername);
+       
+          setUsername(storedUsername);
+          setUserEmail(storedUserEmail);
+        
+        setToken(storedToken);
+        
+      } catch (error) {
+        console.log('Error getting user details:', error);
+      }
+    };
+
+    getUserDetails();
+  }, []); // Chạy chỉ một lần sau khi màn hình được tạo
+
+  const LogOut = async () => {
+    try {
+      await AsyncStorage.removeItem('userToken');
+      await AsyncStorage.removeItem('userId');
+      await AsyncStorage.removeItem('username');
+      await AsyncStorage.removeItem('userEmail');
+      showMessage({
+        message: 'Đăng xuất thành công',
+        type: 'success',
+      });
+      navigation.navigate('Login');
+    } catch (error) {
+      console.log('Error during logout:', error);
+      showMessage({
+        message: 'Đã xảy ra lỗi khi đăng xuất',
+        type: 'danger',
+      });
+    }
+  };
+  const handleLogOut =async()=>{
+    Alert.alert(
+      'Xác nhận đăng xuất?',
+      'Bạn có chắc chắn muốn đăng xuất?',
+      [
+        { text: 'Hủy bỏ', style: 'cancel' },
+        { text: 'Xác nhận', onPress: () =>LogOut() },
+      ]
+    );
+  }
+  const handleDeleteAccount = async () => {
+    Alert.alert(
+      'Xác nhận xóa tài khoản',
+      'Bạn có chắc chắn muốn xóa tài khoản? Thao tác này sẽ không thể hoàn tác.',
+      [
+        { text: 'Hủy bỏ', style: 'cancel' },
+        { text: 'Xác nhận', onPress: () => deleteAccount() },
+      ]
+    )
+  };
+  
+  const deleteAccount = async () => {
+    const responses = await API.requestDELETE_USER(`/users/delete?token=${token}&id=${userId}`);
+    await AsyncStorage.removeItem('userToken');
+    await AsyncStorage.removeItem('userId');
+    await AsyncStorage.removeItem('username');
+    await AsyncStorage.removeItem('userEmail');
+
+    navigation.navigate('Login');
+  };
   return (
    <View style={styles.container}>
       
@@ -33,7 +101,7 @@ const ProfileScreen = () => {
 
      <View style={{width:'100%'}}>
       <Image
-       source={require('../MyApp/screens/space.jpg')} 
+       source={require('../../../assets/images/space.jpg')} 
        style={styles.coverImage }
        resizeMode='cover'
      />
@@ -41,12 +109,15 @@ const ProfileScreen = () => {
    
       <View style={styles.profileContainer}>
       <Image
-        source={require( '../MyApp/screens/profile.jpeg' )} 
+        source={require( '../../../assets/images/profile.jpeg' )} 
         style={styles.avatar }
       />
+
         
+        <Text style={styles.name}>{username}</Text>
       <View style={styles.loginBtn}>
-          <Text style={styles.menuText}>example.com</Text>
+     
+          <Text style={styles.menuText}>{userEmail}</Text>
         </View>
         </View>
         
@@ -54,45 +125,70 @@ const ProfileScreen = () => {
 
         <TouchableOpacity onPress={()=>{}}>
         <View style={styles.menuItem}>
-        
+        <AntDesign
+                  name="heart"
+                  size={20}
+                  color={COLORS.gray}
+                  style={styles.iconStyle}
+                />
           <Text style={styles.menuText}>Favorites</Text>
         </View>
         </TouchableOpacity>
 
 
-        <TouchableOpacity onPress={()=>{}}>
-        <View style={styles.menuItem}>
-          <Text style={styles.menuText}>Orders</Text>
-        </View>
-        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('OrderDetail')}>
+
+  <View style={styles.menuItem}>
+  <MaterialCommunityIcons
+                  name="truck"
+                  size={20}
+                  color={COLORS.gray}
+                  style={styles.iconStyle}
+                />
+    <Text style={styles.menuText}>Orders</Text>
+  </View>
+</TouchableOpacity>
 
 
-        <TouchableOpacity onPress={()=>{}}>
+
+        <TouchableOpacity onPress={()=>navigation.navigate('Cart')}>
         <View style={styles.menuItem}>
+        <MaterialCommunityIcons
+                  name="cart"
+                  size={20}
+                  color={COLORS.gray}
+                  style={styles.iconStyle}
+                />
           <Text style={styles.menuText}>Cart</Text>
         </View>
         </TouchableOpacity>
 
 
-        <TouchableOpacity onPress={()=>{}}>
-        <View style={styles.menuItem}>
-          <Text style={styles.menuText}>Clear Cache</Text>
-        </View>
-        </TouchableOpacity>
 
-
-        <TouchableOpacity onPress={()=>{}}>
+        <TouchableOpacity onPress={handleDeleteAccount}>
         <View style={styles.menuItem}>
+        <MaterialCommunityIcons
+                  name="delete"
+                  size={20}
+                  color={COLORS.gray}
+                  style={styles.iconStyle}
+                />
           <Text style={styles.menuText}>Delete Account</Text>
         </View>
         </TouchableOpacity>
 
 
-        <TouchableOpacity onPress={()=>{}}>
-        <View style={styles.menuItem}>
-          <Text style={styles.menuText}>Log out</Text>
-        </View>
-        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogOut}>
+  <View style={styles.menuItem}>
+  <MaterialCommunityIcons
+                  name="logout"
+                  size={20}
+                  color={COLORS.gray}
+                  style={styles.iconStyle}
+                />
+    <Text style={styles.menuText}>Log out</Text>
+  </View>
+</TouchableOpacity>
 
          </View>
    
@@ -127,13 +223,15 @@ const styles = StyleSheet.create({
     borderColor:COLORS.primary
   },
   name:{
-    fontFamily:"bold",/*bold/*/
+    lineHeight:26,
     color:COLORS.primary,
     marginVertical:5,
-  
+    fontSize:SIZES.large,
+    fontFamily: 'bold', 
+    fontWeight: 'bold',
 },
 menuText:{
-  fontFamily:"Poppins",//regular
+  
   color:COLORS.gray,
   marginLeft:20,
   fontWeight:'600',
@@ -148,18 +246,23 @@ loginBtn:{
   borderRadius:SIZES.medium
 },
 menuItem:{
-  borderBottomWidth:1,
   flexDirection:'row',
   paddingVertical:13,
   paddingHorizontal:35,
-  borderColor:COLORS.gray2
+  borderColor:COLORS.gray2,
+  borderBottomWidth:1,
+//paddingBottom:20
+  
 },
 menuWrapper:{
   //marginTop:SIZES.xLagrge,
   width:SIZES.width-SIZES.large,
   backgroundColor:COLORS.lightWhite,
-  borderRadius:12
+  borderRadius:14
+},
+iconStyle: {
+  marginRight: 10, 
 },
 });
 
-export default ProfileScreen;
+export default ProfileScreen; 
