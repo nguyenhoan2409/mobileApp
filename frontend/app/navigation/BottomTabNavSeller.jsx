@@ -54,7 +54,7 @@ const BottomTabNavigationSeller = () => {
       }}></Tab.Screen>
     <Tab.Screen
       name="Profile"
-      component={Profile}
+      component={ProfileScreen}
       options={{
         tabBarIcon: ({focused}) => {
           return <FontAwesome name={focused ? "user" : "user-o"}
