@@ -32,57 +32,99 @@ import ProductCateList from './app/screens/ProductCateList';
 import BottomTabNavigationSeller from './app/navigation/BottomTabNavSeller';
 import RecommendedProducts from './app/screens/RecommendedProducts';
 import SeenProducts from './app/screens/SeenProducts';
-
+import Login from './app/screens/auth/Login';
+import Signup from './app/screens/auth/Signup';
+import FlashMessage from 'react-native-flash-message';
+import Cart from './app/screens/Cart';
+import Paying from './app/screens/Paying';
+import ProfileScreen from './app/screens/profile/ProfileScreen';
+import OrderManagement from './app/screens/profile/OrderManagement';
+import SellerProfile from './app/screens/profile/SellerProfile';
+import OrderDetail from './app/screens/profile/OrderDetail';
 const Stack = createNativeStackNavigator();
-var userType = "buyer";
 
 function App(): JSX.Element {
-  if (userType == "buyer") {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="BottomTab"
-            component={BottomTabNavigation}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="SignUp"
+          component={Signup}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="BottomTabBuyer"
+          component={BottomTabNavigation}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="BottomTabSeller"
+          component={BottomTabNavigationSeller}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
           name="ProductCateList"
           component={ProductCateList}
           options={{headerShown: false}}
         />
-          <Stack.Screen
+        <Stack.Screen
           name="ProductDetail"
           component={ProductDetail}
           options={{headerShown: false}}
         />
         <Stack.Screen
-        name="RecommendedProducts"
-        component={RecommendedProducts}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
+          name="RecommendedProducts"
+          component={RecommendedProducts}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
           name="SeenProducts"
           component={SeenProducts}
           options={{headerShown: false}}
         />
-        
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
-  } else {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator>
+      
+        <Stack.Screen
+          name="Cart"
+          component={Cart}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Pay"
+          component={Paying}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ProfileScreen"
+          component={ProfileScreen}
+          options={{headerShown: false}}
+        />
+      <Stack.Screen
+          name="OrderManagement"
+          component={OrderManagement}
+          options={{headerShown: false}}
+        />
+         <Stack.Screen
+          name="SellerProfile"
+          component={SellerProfile}
+          options={{headerShown: false}}
+        />
           <Stack.Screen
-            name="BottomTabSeller"
-            component={BottomTabNavigationSeller}
-            options={{headerShown: false}}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
-  }
+          name="OrderDetail"
+          component={OrderDetail}
+          options={{headerShown: false}}
+        />
+      </Stack.Navigator>
+    
+      <FlashMessage position={"bottom"} />
+    </NavigationContainer>
+    
+  );
 }
 
 const styles = StyleSheet.create({
