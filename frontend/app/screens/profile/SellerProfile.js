@@ -123,17 +123,7 @@ const ProfileScreen = () => {
         
 
 
-        <TouchableOpacity onPress={()=>{}}>
-        <View style={styles.menuItem}>
-        <AntDesign
-                  name="heart"
-                  size={20}
-                  color={COLORS.gray}
-                  style={styles.iconStyle}
-                />
-          <Text style={styles.menuText}>Favorites</Text>
-        </View>
-        </TouchableOpacity>
+      
 
 
         <TouchableOpacity onPress={() => navigation.navigate('OrderManagement')}>
@@ -149,19 +139,6 @@ const ProfileScreen = () => {
   </View>
 </TouchableOpacity>
 
-
-
-        <TouchableOpacity onPress={()=>navigation.navigate('Cart')}>
-        <View style={styles.menuItem}>
-        <MaterialCommunityIcons
-                  name="cart"
-                  size={20}
-                  color={COLORS.gray}
-                  style={styles.iconStyle}
-                />
-          <Text style={styles.menuText}>Cart</Text>
-        </View>
-        </TouchableOpacity>
 
 
 
@@ -233,7 +210,7 @@ const styles = StyleSheet.create({
 menuText:{
   
   color:COLORS.gray,
-  marginLeft:20,
+  marginHorizontal:20,
   fontWeight:'600',
   fontSize:14,
   lineHeight:26
@@ -251,6 +228,7 @@ menuItem:{
   paddingHorizontal:35,
   borderColor:COLORS.gray2,
   borderBottomWidth:1,
+
 //paddingBottom:20
   
 },
