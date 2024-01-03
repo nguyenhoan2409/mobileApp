@@ -120,20 +120,6 @@ const ProfileScreen = () => {
           <Text style={styles.menuText}>{userEmail}</Text>
         </View>
         </View>
-        
-
-
-        <TouchableOpacity onPress={()=>{}}>
-        <View style={styles.menuItem}>
-        <AntDesign
-                  name="heart"
-                  size={20}
-                  color={COLORS.gray}
-                  style={styles.iconStyle}
-                />
-          <Text style={styles.menuText}>Favorites</Text>
-        </View>
-        </TouchableOpacity>
 
 
         <TouchableOpacity onPress={() => navigation.navigate('OrderDetail')}>
@@ -231,12 +217,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
 },
 menuText:{
-  
   color:COLORS.gray,
-  marginLeft:20,
+  marginHorizontal:20,
   fontWeight:'600',
   fontSize:14,
-  lineHeight:26
+  lineHeight:26,
+  textAlign: 'center',
 },
 loginBtn:{
   backgroundColor:COLORS.secondary,
