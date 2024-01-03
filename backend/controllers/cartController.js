@@ -8,7 +8,7 @@ const cartController = {
   getProduct: async (req, res, next) => {
     try {
       const userId = req.query.userId;
-      const cartUser = await Cart.findOne({ user_id: userId });
+      const cartUser = await Cart.findOne({ user_id: userId }).populate('product.product_id');
 
       if (cartUser) {
         const listProduct = cartUser.product;
@@ -203,7 +203,7 @@ const cartController = {
       for (const item of cartUser.product) {
         const product = await Product.findById(item.product_id);
         if (product) {
-          totalAmount += item.quantity * product.discountPrice; 
+          totalAmount += item.quantity * product.originalPrice; 
         }
       }
 
@@ -268,7 +268,8 @@ const cartController = {
         let totalValue = 0;
         cartUser.product.forEach((item) => {
             if (item.product_id) {
-                totalValue += item.quantity * item.product_id.discountPrice;
+                totalValue += item.quantity * item.product_id.originalPrice
+                ;
             }
         });
 

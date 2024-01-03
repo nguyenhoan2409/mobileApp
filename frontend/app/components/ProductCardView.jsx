@@ -1,5 +1,5 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {TouchableOpacity} from 'react-native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -12,6 +12,7 @@ import API from '../services/GlobalAPI';
 
 const ProductCardView = ({item}) => {
   const navigation = useNavigation();
+  const [id, setId] = useState(''); 
 
   const addToSeenProductList = async () => {
     try {
@@ -60,7 +61,7 @@ const ProductCardView = ({item}) => {
           description: '',
           type: 'success',
           position: 'top',
-          duration: 4000,
+          duration: 2000,
           icon: props => (
             <AntDesign
               name="checkcircleo"
@@ -94,6 +95,19 @@ const ProductCardView = ({item}) => {
     }
   };
 
+  const getUserRoleID = async () => {
+    try {
+      const userRoleId = await AsyncStorage.getItem('userRoleId');
+      setId(userRoleId); 
+    } catch (error) {
+      console.log('Lỗi khi lấy userRoleId:', error);
+    }
+  };
+
+  useEffect(() => {
+    getUserRoleID(); 
+  }, [])
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -111,7 +125,7 @@ const ProductCardView = ({item}) => {
             {item.name}
           </Text>
           {/* <Text style={styles.supplier} numberOfLines={1}>{item.supplier}</Text> */}
-          <Text style={styles.price}> ${item.originalPrice} </Text>
+          <Text style={styles.price}> ${item.originalPrice}VNĐ </Text>
 
           <TouchableOpacity
             style={{
@@ -123,9 +137,9 @@ const ProductCardView = ({item}) => {
             onPress={() => {
               addToCart(item);
               }}>
-            <Text style={{color: COLORS.white, padding: 5}}>
+            {(id == "653a2547a823940702a4b90e") && (<Text style={{color: COLORS.white, padding: 5}}>
               Thêm vào giỏ hàng
-            </Text>
+            </Text>)}
           </TouchableOpacity>
         </View>
       </View>

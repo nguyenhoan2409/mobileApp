@@ -72,41 +72,64 @@ const Products = () => {
   const [userToken, setUserToken] = useState('');
 
   const [recommendedProductList, setRecommendedProductList] = useState([]);
-  useEffect(() => {
-    const getList = async () => {
-      try {
-        const value = await AsyncStorage.getItem('userToken');
-        setUserToken(value);
-        var recommended_product_list = await API.requestGET_SP(
-          `/products/all?token=${value}`,
-        );
+  const [categoryList, setCategoryList] = useState([]);
 
-        if (recommended_product_list) {
-          setRecommendedProductList(recommended_product_list);
-        } else {
-          showMessage({
-            message: 'Lỗi get sản phẩm đề xuất',
-            description: '',
-            type: 'danger',
-            position: 'top',
-            duration: 2000,
-            icon: props => (
-              <AntDesign
-                name="warning"
-                size={22}
-                color={COLORS.white}
-                style={{padding: 10}}
-                {...props}
-              />
-            ),
-          });
-        }
-      } catch (error) {
-        console.log(error);
+  const getList = async () => {
+    try {
+      const value = await AsyncStorage.getItem('userToken');
+      setUserToken(value);
+      var recommended_product_list = await API.requestGET_SP(
+        `/products/all?token=${value}`,
+      );
+
+      if (recommended_product_list) {
+        setRecommendedProductList(recommended_product_list);
+      } else {
+        showMessage({
+          message: 'Lỗi get sản phẩm đề xuất',
+          description: '',
+          type: 'danger',
+          position: 'top',
+          duration: 2000,
+          icon: props => (
+            <AntDesign
+              name="warning"
+              size={22}
+              color={COLORS.white}
+              style={{padding: 10}}
+              {...props}
+            />
+          ),
+        });
       }
-    };
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
     getList();
+    getCategorylist();
   }, []);
+
+  const getCategorylist = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      var respone = await API.requestGET_SP(`/categories/all?token=${token}`);
+      if (respone) {
+        setCategoryList(respone);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      getList(); 
+    })
+  }, [])
+
   return (
     <SafeAreaView>
       <ScrollView>
@@ -129,6 +152,16 @@ const Products = () => {
             <TouchableOpacity style={styles.searchBtn}>
               <Ionicons
                 name="camera-outline"
+                size={SIZES.xLarge}
+                color={COLORS.offwhite}
+              />
+            </TouchableOpacity>
+          </View>
+
+          <View>
+            <TouchableOpacity style={styles.searchBtn} onPress={() => {navigation.navigate('AddProduct', categoryList)}}>
+              <Ionicons
+                name="add"
                 size={SIZES.xLarge}
                 color={COLORS.offwhite}
               />
@@ -158,12 +191,12 @@ const Products = () => {
             renderItem={({item, index}) => (
               <ProductCardView item={item} key={index} />
             )}
-            horizontal
+            numColumns={2}
             contentContainerStyle={{columnGap: SIZES.medium - 5}}
           />
         </View>
 
-        <View style={styles.bestSellProductWrapper}>
+        {/* <View style={styles.bestSellProductWrapper}>
           <View
             style={{
               flexDirection: 'row',
@@ -188,7 +221,7 @@ const Products = () => {
             horizontal
             contentContainerStyle={{columnGap: SIZES.medium - 5}}
           />
-        </View>
+        </View> */}
       </ScrollView>
     </SafeAreaView>
   );

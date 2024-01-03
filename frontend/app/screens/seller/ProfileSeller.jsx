@@ -17,7 +17,7 @@ const ProfileSeller = () => {
     }
     return (
         <View>
-            <Text onPress={() => {removeItemValue('userToken')}}>ProfileSeller</Text>
+            <Text onPress={() => {removeItemValue('userToken')}}>Đăng xuất</Text>
         </View>
     )
 }
