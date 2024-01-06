@@ -100,18 +100,18 @@ const ProfileScreen = () => {
     <StatusBar backgroundColor={COLORS.gray}/>
 
      <View style={{width:'100%'}}>
-      <Image
+      {/* <Image
        source={require('../../../assets/images/space.jpg')} 
        style={styles.coverImage }
        resizeMode='cover'
-     />
+     /> */}
    </View>
    
       <View style={styles.profileContainer}>
-      <Image
+      {/* <Image
         source={require( '../../../assets/images/profile.jpeg' )} 
         style={styles.avatar }
-      />
+      /> */}
 
         
         <Text style={styles.name}>{username}</Text>

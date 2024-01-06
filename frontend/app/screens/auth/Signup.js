@@ -16,47 +16,6 @@ import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-// import 'react-native-gesture-handler';
-
-const Signup = () => {
-  const navigation = useNavigation();
-  const [password, setPassword] = useState('');
-  const [passwordVisibility, setPasswordVisibility] = useState(true);
-  const [rightIcon, setRightIcon] = useState('eye');
-  const handlePasswordVisibility = () => {
-    if (rightIcon === 'eye') {
-      setRightIcon('eye-off');
-      setPasswordVisibility(!passwordVisibility);
-    } else if (rightIcon === 'eye-off') {
-      setRightIcon('eye');
-      setPasswordVisibility(!passwordVisibility);
-    }
-  };
-
-  return (
-    <ScrollView>
-      <SafeAreaView style={{marginHorizontal: 20}}>
-import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import {
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { showMessage } from 'react-native-flash-message';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Feather from 'react-native-vector-icons/Feather';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { COLORS, SIZES } from '../../constants';
-import API from '../../services/GlobalAPI';
-// import 'react-native-gesture-handler';
-
 const Signup = () => {
   const navigation = useNavigation();
   const [password, setPassword] = useState('');
@@ -346,9 +305,6 @@ useEffect(() => {
             </TouchableOpacity>
           </View>
         </View>
-      </SafeAreaView>
-    </ScrollView>
-  );
       </SafeAreaView>
     </ScrollView>
   );

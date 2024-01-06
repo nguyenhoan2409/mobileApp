@@ -44,7 +44,7 @@ const BottomTabNavigationSeller = () => {
           />
         }
       }}></Tab.Screen>
-      <Tab.Screen
+      {/* <Tab.Screen
       name="Search"
       component={Search}
       options={{
@@ -54,7 +54,7 @@ const BottomTabNavigationSeller = () => {
           color={focused ? "#008E97" : "black"}
           />
         }
-      }}></Tab.Screen>
+      }}></Tab.Screen> */}
     <Tab.Screen
       name="Đơn hàng"
       component={Orders}

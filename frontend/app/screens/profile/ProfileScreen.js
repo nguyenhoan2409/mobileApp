@@ -1,10 +1,6 @@
 import React from 'react';
-import { View, Text,TextInput, Image, StyleSheet, Touchable } from 'react-native';
 import {COLORS, SIZES} from '../../constants';
-import {AntDesign,MaterialCommunityIcons} from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Alert,
   Image,
@@ -20,7 +16,6 @@ import { useNavigation } from '@react-navigation/native';
 import { showMessage } from 'react-native-flash-message';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { COLORS, SIZES } from '../../constants';
 import API from '../../services/GlobalAPI';
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -106,18 +101,18 @@ const ProfileScreen = () => {
     <StatusBar backgroundColor={COLORS.gray}/>
 
      <View style={{width:'100%'}}>
-      <Image
+      {/* <Image
        source={require('../../../assets/images/space.jpg')} 
        style={styles.coverImage }
        resizeMode='cover'
-     />
-   </View>
+     /> */}
+    </View>
    
       <View style={styles.profileContainer}>
-      <Image
+      {/* <Image
         source={require( '../../../assets/images/profile.jpeg' )} 
         style={styles.avatar }
-      />
+      /> */}
 
         
         <Text style={styles.name}>{username}</Text>
