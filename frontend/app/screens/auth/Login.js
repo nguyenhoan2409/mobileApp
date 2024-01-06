@@ -112,6 +112,9 @@ const Login = () => {
               </View>
             </View>
 
+            
+          
+
             <View style={styles.wrapper}>
               <Text style={styles.label}>Password</Text>
               <View style={styles.passwordWrapper}>

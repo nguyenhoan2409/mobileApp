@@ -44,6 +44,17 @@ const BottomTabNavigationSeller = () => {
           />
         }
       }}></Tab.Screen>
+      <Tab.Screen
+      name="Search"
+      component={Search}
+      options={{
+        tabBarIcon: ({focused}) => {
+          return <Ionicons name={focused ? "search" : "search-outline"}
+          size = {24}
+          color={focused ? "#008E97" : "black"}
+          />
+        }
+      }}></Tab.Screen>
     <Tab.Screen
       name="Đơn hàng"
       component={Orders}

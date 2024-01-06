@@ -1,10 +1,4 @@
-import React from 'react';
-import { View, Text,TextInput, Image, StyleSheet, Touchable } from 'react-native';
-import {COLORS, SIZES} from '../../constants';
-import {AntDesign,MaterialCommunityIcons} from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Image,
@@ -142,7 +136,7 @@ const ProfileScreen = () => {
         </TouchableOpacity>
 
 
-        <TouchableOpacity onPress={() => navigation.navigate('OrderDetail')}>
+        <TouchableOpacity onPress={() => navigation.navigate('OrderManagement')}>
 
   <View style={styles.menuItem}>
   <MaterialCommunityIcons
