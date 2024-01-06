@@ -160,6 +160,31 @@ const UpdateProduct = () => {
   useEffect(() => {
     getCategorylist();
   }, []);
+
+  const deleteProduct = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const response = await API.requestPOST_SP(
+        `/products/delete?token=${token}&id=${item._id}`,
+      );
+  
+      if (response) {
+        showMessage({
+          message: 'Sản phẩm đã được xóa',
+          type: 'success',
+        });
+  
+        navigation.navigate('BottomTabSeller'); 
+      }
+    } catch (error) {
+      console.log(error);
+      showMessage({
+        message: 'Lỗi xóa sản phẩm',
+        type: 'danger',
+      });
+    }
+  };
+  
   return (
     <>
       <ScrollView>
@@ -325,6 +350,13 @@ const UpdateProduct = () => {
                     updateProduct();
                 }}>
                 <Text style={styles.cartTitle}>Lưu thay đổi</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.addProductBtn, { backgroundColor: COLORS.red }]}
+                onPress={() => {
+                    deleteProduct();
+                }}>
+                <Text style={styles.cartTitle}>Xóa sản phẩm</Text>
               </TouchableOpacity>
             </View>
           </View>

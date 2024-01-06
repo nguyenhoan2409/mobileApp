@@ -123,18 +123,18 @@ const ProfileScreen = () => {
         </View>
 
 
-        <TouchableOpacity onPress={() => navigation.navigate('OrderDetail')}>
+        {/* <TouchableOpacity onPress={() => navigation.navigate('OrderDetail')}>
 
-  <View style={styles.menuItem}>
-  <MaterialCommunityIcons
-                  name="truck"
-                  size={20}
-                  color={COLORS.gray}
-                  style={styles.iconStyle}
-                />
-    <Text style={styles.menuText}>Orders</Text>
-  </View>
-</TouchableOpacity>
+          <View style={styles.menuItem}>
+          <MaterialCommunityIcons
+                          name="truck"
+                          size={20}
+                          color={COLORS.gray}
+                          style={styles.iconStyle}
+                        />
+            <Text style={styles.menuText}>Orders</Text>
+          </View>
+        </TouchableOpacity> */}
 
 
 

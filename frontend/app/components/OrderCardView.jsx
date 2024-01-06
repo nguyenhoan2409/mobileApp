@@ -63,7 +63,7 @@ const OrderCardView = ({item}) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('OrderDetail', {item});
+        navigation.navigate('OrderDetail', { orderId: item._id });
       }}>
       <View style={styles.container}>
         <View style={{flexDirection: 'row'}}>
@@ -80,7 +80,7 @@ const OrderCardView = ({item}) => {
                 #ID: {item._id}
               </Text>
               <Text style={styles.date}> {item.createdAt.substring(0, 10)} </Text>
-              <Text style={styles.date}> Trạng thái: {returnStatus(item.status)} </Text>
+              {/* <Text style={styles.date}> Trạng thái: {returnStatus(item.status)} </Text> */}
             </View>
           </View>
         </View>

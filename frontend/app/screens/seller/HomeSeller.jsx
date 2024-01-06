@@ -19,41 +19,6 @@ import {jwtDecode} from 'jwt-decode';
 import API from '../../services/GlobalAPI';
 
 const HomeSeller = () => {
-  const orderList = [
-    {
-      customerName: 'Mạnh Hoàn',
-      orderId: '#51205325',
-      date: '21/11/2023',
-      imageUrl:
-        'https://th.bing.com/th/id/OIP.WMZMXQ1kgEqFi9Qfv7o3VAHaHa?pid=ImgDet&rs=1',
-      total: '150000VNĐ',
-    },
-    {
-      customerName: 'Trung',
-      orderId: '#51205325',
-      date: '21/11/2023',
-      imageUrl:
-        'https://th.bing.com/th/id/OIP.WMZMXQ1kgEqFi9Qfv7o3VAHaHa?pid=ImgDet&rs=1',
-      total: '150000VNĐ',
-    },
-    {
-      customerName: 'Hoàng Lan',
-      orderId: '#51205325',
-      date: '21/11/2023',
-      imageUrl:
-        'https://th.bing.com/th/id/OIP.WMZMXQ1kgEqFi9Qfv7o3VAHaHa?pid=ImgDet&rs=1',
-      total: '150000VNĐ',
-    },
-    {
-      customerName: 'Lai',
-      orderId: '#51205325',
-      date: '21/11/2023',
-      imageUrl:
-        'https://th.bing.com/th/id/OIP.WMZMXQ1kgEqFi9Qfv7o3VAHaHa?pid=ImgDet&rs=1',
-      total: '150000VNĐ',
-    },
-  ];
-
   const navigation = useNavigation();
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [totalSoldProduct, setTotalSoldProduct] = useState(0);

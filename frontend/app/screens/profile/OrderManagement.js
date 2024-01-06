@@ -89,7 +89,7 @@ const OrderManagement = () => {
   const handleGetCompletedOrders = async () => {
     try {
       const storedToken = await AsyncStorage.getItem('token');
-      const getAllOrders = await API.requestGET_ORDERS(`/orders/all?token=${storedToken}`);
+      const getAllOrders = await API.requestGET_SP(`/orders/all?token=${storedToken}`);
 
       
 
@@ -129,7 +129,7 @@ const OrderManagement = () => {
     const handleGetPendingOrders = async () => {
       try {
         const storedToken = await AsyncStorage.getItem('token');
-        const getAllOrders = await API.requestGET_ORDERS(`/orders/all?token=${storedToken}`);
+        const getAllOrders = await API.requestGET_SP(`/orders/all?token=${storedToken}`);
         const pendingOrders = getAllOrders.filter((order) => order.status === 'pending');
         
         setPendingOrdersList(pendingOrders)
