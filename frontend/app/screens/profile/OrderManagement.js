@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -30,7 +31,7 @@ const OrderManagement = () => {
     
   ]);
   const [totalRevenue, setTotalRevenue] = useState(0);
-  const [productQuantity,setProductQuantity]= useState([]);
+  const [PendingProductQuantity,setPendingProductQuantity]= useState([]);
   const tempQuantity = [];
 
   const handleToPayPress = () => {
@@ -42,35 +43,55 @@ const OrderManagement = () => {
     setShowUnpaidOrders(false);
     setShowCompletedOrders(true);
   };
-  const handleDeleteOrder = async (orderId,orderStatus) => {
-    try{
-    const storedToken = await AsyncStorage.getItem('token');
-    const response = await API.requestDELETE_ORDER(`/delete?token=${storedToken}&id=${orderId}`);
-    if (response.status === 200) {
-      console.log('Đơn hàng đã được xóa thành công');
-      
-      if (orderStatus === 'completed') {
-        
-        setCompletedOrdersList((prevList) => prevList.filter((order) => order._id !== orderId));
-      } else if (orderStatus === 'pending') {
-        
-        setPendingOrdersList((prevList) => prevList.filter((order) => order._id !== orderId));
-      }
-    } else {
-      console.log('Có lỗi xảy ra khi xóa đơn hàng');
+  const handleDeleteOrder = async (orderId, orderStatus) => {
+    try {
+      // Hiển thị hộp thoại xác nhận
+      Alert.alert(
+        'Xác nhận xóa đơn hàng',
+        'Bạn muốn xóa đơn hàng này?',
+        [
+          {
+            text: 'Hủy bỏ',
+            style: 'cancel',
+          },
+          {
+            text: 'Xác nhận',
+            onPress: async () => {
+              const storedToken = await AsyncStorage.getItem('token');
+              const response = await API.requestDELETE_ORDER(
+                `/delete?token=${storedToken}&id=${orderId}`
+              );
+  
+              if (response.status === 200) {
+                console.log('Đơn hàng đã được xóa thành công');
+  
+                if (orderStatus === 'completed') {
+                  setCompletedOrdersList((prevList) =>
+                    prevList.filter((order) => order._id !== orderId)
+                  );
+                } else if (orderStatus === 'pending') {
+                  setPendingOrdersList((prevList) =>
+                    prevList.filter((order) => order._id !== orderId)
+                  );
+                }
+              } else {
+                console.log('Có lỗi xảy ra khi xóa đơn hàng');
+              }
+            },
+          },
+        ]
+      );
+    } catch (error) {
+      console.log('Lỗi khi xóa đơn hàng:', error);
     }
-  } catch (error) {
-    console.log('Lỗi khi xóa đơn hàng:', error);
-  }
-};
+  };
   
   const handleGetCompletedOrders = async () => {
     try {
       const storedToken = await AsyncStorage.getItem('token');
       const getAllOrders = await API.requestGET_ORDERS(`/orders/all?token=${storedToken}`);
 
-      //setCompletedOrdersList(response.cart);
-      //setPendingOrdersList(responses.cart);
+      
 
       const completedOrders = getAllOrders.filter((order) => order.status === 'completed');
 
@@ -110,6 +131,7 @@ const OrderManagement = () => {
         const storedToken = await AsyncStorage.getItem('token');
         const getAllOrders = await API.requestGET_ORDERS(`/orders/all?token=${storedToken}`);
         const pendingOrders = getAllOrders.filter((order) => order.status === 'pending');
+        
         setPendingOrdersList(pendingOrders)
         const pendingOrdersWithUsernames = await Promise.all(
           pendingOrders.map(async (order) => {
@@ -121,6 +143,18 @@ const OrderManagement = () => {
         );
   
         setPendingOrdersWithUsernames(pendingOrdersWithUsernames);
+        //console.log('PendingProductQuantity:', PendingProductQuantity);
+        const getTotalAmount = pendingOrders.map((order) => {
+          
+          const totalAmount = order.totalAmount || 0;
+          
+          // Lưu totalAmount vào AsyncStorage
+          AsyncStorage.setItem(`totalAmount_${order._id}`, totalAmount.toString());
+  
+          return order.cart.reduce((acc, product) => acc + product.quantity, 0);
+        });
+       
+
   
         const pendingOrdersWithQuantity = pendingOrders.map((order) => {
           const totalQuantity = order.cart.reduce((acc, product) => {
@@ -131,14 +165,14 @@ const OrderManagement = () => {
           }, 0);
           AsyncStorage.setItem(`totalQuantity_${order._id}`, totalQuantity.toString());
          
-          setProductQuantity((prevProductQuantity) => [...prevProductQuantity, ...tempQuantity]);
           
 
           const productIDs = order.cart.map((product) => product.product_id);
           
-          
+          const pendingproductQuantity=order.cart.map((product)=>product.quantity);
+          setPendingProductQuantity((prevPendingProductQuantity)=>[...prevPendingProductQuantity,{id:order._id,pendingproductQuantity}]);
           setPendingOrderProductID((prevProductIDs) => [...prevProductIDs, { id: order._id, productIDs }]);
-          
+         
           return {
             id: order._id,
             customer: order.customerName, 
@@ -163,29 +197,40 @@ const OrderManagement = () => {
   }, []);
 
   const handleOrderClick =  (order) => {
-    // Xử lý logic khi người dùng nhấn vào một đơn hàng
+    
     console.log('Order clicked:', order);
     
-    // Các hành động khác cần thực hiện
+  
   };
-  const handleCheckout= async({ userID, productIDs }) => {
+  const handleCheckout= async(order, status) => {
+    const { userId, _id: orderId, totalAmount,  } = order;
+
     const storedToken = await AsyncStorage.getItem('token');
-    navigation.navigate('OrderDetail')
     
-    
-    const userId = await API.requestGET_USER_DETAILS(`/users/details?id=${userID}&token=${storedToken}`);
-    
-    const { user } = userId;
+    const userDetail = await API.requestGET_USER_DETAILS(`/users/details?id=${userId}&token=${storedToken}`);
+   
+    const { user } = userDetail;
     const {username,phone,address}=user;
-    console.log('UserID,ProductIDs')
-   console.log(productIDs)
+    const productIDs = order.cart.map((product) => product.product_id);
+  const eachPendingProductQuantity = order.cart.map((product) => product.quantity);
+
+    navigation.navigate('OrderDetail',{
+      eachPendingProductQuantity,
+      totalPayment: totalAmount,
+      status,
+      userInfor: { username, phone, address },
+      productIDs,
+      orderId
+    });
+    
+
    const quantities = productQuantity.map(item => item.quantity);
    await AsyncStorage.setItem('productQuantities', JSON.stringify(quantities));
 
             await AsyncStorage.setItem('userInfor', JSON.stringify(user));
 
             await AsyncStorage.setItem('productIDs', JSON.stringify(productIDs));
-
+            await AsyncStorage.setItem('pendingProductQuantity', JSON.stringify(eachPendingProductQuantity));
 
   };
   const calculateTotalRevenue = () => {
@@ -196,6 +241,7 @@ const OrderManagement = () => {
   
   useEffect(() => {
     calculateTotalRevenue();
+   
   }, [completedOrdersList]);
   
   return (
@@ -231,17 +277,14 @@ const OrderManagement = () => {
             <Text style={styles.productTiltle}>{pendingOrdersWithUsernames[index]?.customerName}</Text>
             <Text>Tổng sản phẩm: {total}</Text>
             
-              <Text style={{ color: '#FFCC00' }}>Đang xử lý</Text>
+              <Text style={{ color: '#FFCC33' }}>Đang xử lý</Text>
               
           </View>
 
           <TouchableOpacity
             style={styles.checkoutButton}
-            onPress={() => handleCheckout({
-              userID: pendingOrdersList[index].userId,
-              productIDs: pendingOrderProductID[index].productIDs,
-              //productQuantity:pendingOrderProductID[index].
-            })}
+            onPress={() => handleCheckout(pendingOrdersList[index],'đang xử lý')}
+
           >
             <Text style={styles.checkoutButtonText}>Check-out</Text>
           </TouchableOpacity>
@@ -276,7 +319,7 @@ const OrderManagement = () => {
 
                 <TouchableOpacity
                   style={styles.checkoutButton}
-                  onPress={() => handleCheckout(getAllOrdersCompletedOrder[index])}
+                  onPress={() => handleCheckout(completedOrdersList[index],'đã hoàn thành')}
                 >
                   <Text style={styles.checkoutButtonText}>Check-out</Text>
                 </TouchableOpacity>
@@ -388,11 +431,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 'auto',
   },
   totalRevenueText:{
-    fontFamily:"bold",
-    fontSize:SIZES.large,
-    color:COLORS.black,
-    alignItems:"center",
-    marginBottom:SIZES.xLarge
+    lineHeight: 26,
+    color: COLORS.black,
+    marginVertical: 5,
+    fontSize: SIZES.xLarge,
+    fontFamily: 'bold',
+    fontWeight: 'bold',
   },
 });
 
